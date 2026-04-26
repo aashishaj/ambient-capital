@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ambient Capital — Official Rulebook</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1C1C1A; --paper:#F6EDD9; --paper2:#FDF8EF; --mu:#7A7368; --rule:#D9CEBC;
+  --br:#8B5E3C; --brl:#F5ECD8;
+  --lb:#4B8EC4; --lbl:#DCF0FF;
+  --pk:#C94070; --pkl:#FBEAF0;
+  --or:#C47020; --orl:#FFF0DC;
+  --rd:#C73535; --rdl:#FAE8E8;
+  --yl:#B8920A; --yll:#FFFADC;
+  --gn:#3A7A28; --gnl:#E8F5DC;
+  --db:#1A3A8A; --dbl:#DCE8FF;
+  --tl:#1A8A68;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);font-family:'DM Sans',sans-serif;color:var(--ink)}
+
+/* COVER */
+.cover{background:var(--paper);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 2rem;position:relative;overflow:hidden}
+.cover::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,rgba(28,28,26,.04) 0 1px,transparent 1px 80px),repeating-linear-gradient(90deg,rgba(28,28,26,.04) 0 1px,transparent 1px 80px);pointer-events:none}
+.cv{position:relative;z-index:1;max-width:720px}
+.eyebrow{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:4px;text-transform:uppercase;color:var(--mu);margin-bottom:1.5rem}
+.cover-title{font-family:'Playfair Display',serif;font-size:clamp(4rem,10vw,8.5rem);font-weight:900;line-height:.85;letter-spacing:-5px;margin-bottom:1.2rem}
+.cover-it{font-family:'Playfair Display',serif;font-size:clamp(1rem,2.5vw,1.5rem);font-style:italic;color:var(--mu);margin-bottom:2rem}
+.thine-pill{display:inline-block;background:var(--ink);color:var(--paper);font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:2px;padding:9px 26px;border-radius:100px;margin-bottom:3rem}
+.cover-divider{width:60px;height:3px;background:var(--ink);margin:0 auto 3rem}
+.cover-stats{display:flex;gap:3rem;justify-content:center;flex-wrap:wrap}
+.stat{text-align:center}
+.stat-n{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:700;line-height:1}
+.stat-l{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu);margin-top:4px}
+.scroll-cue{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:2px;color:var(--mu);text-transform:uppercase;animation:bob 2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(5px)}}
+
+/* NAV */
+.nav{position:sticky;top:0;background:rgba(253,248,239,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--rule);padding:.6rem 3rem;z-index:100;display:flex;align-items:center;gap:2rem;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.nav::-webkit-scrollbar{display:none}
+.nav-logo{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;white-space:nowrap;flex-shrink:0}
+.nav-links{display:flex;gap:1.5rem}
+.nav-a{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu);text-decoration:none;white-space:nowrap;transition:color .15s}
+.nav-a:hover{color:var(--ink)}
+
+/* CONTENT WRAPPER */
+.content{background:var(--paper2);max-width:900px;margin:0 auto}
+
+/* SECTIONS */
+.sec{padding:5rem 4rem;border-bottom:1px solid var(--rule)}
+.sec:last-child{border-bottom:none}
+.sec-n{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:3px;text-transform:uppercase;color:var(--mu);margin-bottom:.8rem}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:900;letter-spacing:-2px;line-height:.95;margin-bottom:1rem}
+.sec-title::after{content:'';display:block;width:36px;height:3px;background:var(--ink);margin-top:1rem}
+.prose{font-size:.95rem;line-height:1.9;color:#3a3a38;max-width:660px;margin-bottom:1rem}
+.prose strong{color:var(--ink);font-weight:500}
+.prose em{font-style:italic;color:var(--mu)}
+
+/* CALLOUT */
+.callout{background:var(--paper);border-left:4px solid var(--ink);padding:1.2rem 1.5rem;margin:1.5rem 0;border-radius:0 4px 4px 0}
+.callout-tag{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--mu);margin-bottom:.4rem}
+.callout p{font-size:.9rem;line-height:1.75;color:var(--ink)}
+
+/* BOARD MAP TABLE */
+.board-table{width:100%;border-collapse:collapse;margin:2rem 0;font-size:.82rem}
+.board-table th{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--mu);padding:8px 10px;text-align:left;border-bottom:2px solid var(--rule);white-space:nowrap}
+.board-table td{padding:9px 10px;border-bottom:1px solid var(--rule);vertical-align:middle;line-height:1.4}
+.board-table tr:last-child td{border-bottom:none}
+.board-table tr:hover td{background:var(--paper)}
+.pos-num{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--mu);width:30px}
+.sq-name{font-weight:500;color:var(--ink)}
+.sq-orig{font-size:.72rem;color:var(--mu);font-style:italic}
+.sq-type{font-family:'DM Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:100px;white-space:nowrap}
+
+/* COLOR SWATCHES */
+.color-tag{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:6px;vertical-align:middle;flex-shrink:0}
+
+/* COLOR GROUP BLOCKS */
+.cg-block{margin-bottom:2rem;border-radius:6px;overflow:hidden;border:1px solid var(--rule)}
+.cg-header{padding:14px 20px;display:flex;align-items:center;gap:12px}
+.cg-header-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700}
+.cg-header-sub{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.cg-body{background:var(--paper2)}
+.cg-flavor{padding:12px 20px 8px;font-size:.82rem;font-style:italic;color:var(--mu);line-height:1.6;border-bottom:1px solid var(--rule)}
+.cg-props-table{width:100%;border-collapse:collapse;font-size:.78rem}
+.cg-props-table th{font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu);padding:6px 12px;text-align:right;border-bottom:1px solid var(--rule)}
+.cg-props-table th:first-child{text-align:left}
+.cg-props-table td{padding:8px 12px;text-align:right;border-bottom:1px solid var(--rule)}
+.cg-props-table td:first-child{text-align:left;font-weight:500;color:var(--ink)}
+.cg-props-table tr:last-child td{border-bottom:none}
+.cg-props-table .money{font-family:'DM Mono',monospace;font-size:.72rem;color:#3a3a38}
+.cg-footer{background:var(--paper);padding:10px 20px;display:flex;gap:2rem;font-family:'DM Mono',monospace;font-size:.65rem;color:var(--mu);border-top:1px solid var(--rule)}
+
+/* RAILROAD / UTILITY BLOCK */
+.ru-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:1.5rem 0}
+.ru-card{background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:16px 18px}
+.ru-pos{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--mu);margin-bottom:4px;letter-spacing:1px}
+.ru-em{font-size:1.4rem;margin-bottom:6px}
+.ru-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:6px}
+.ru-flavor{font-size:.78rem;color:var(--mu);font-style:italic;line-height:1.6;margin-bottom:10px}
+.ru-rule{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--ink);line-height:1.6}
+
+/* SPECIAL SQUARES */
+.sq-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:1.5rem 0}
+.sq-card{background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:14px 16px}
+.sq-card-em{font-size:1.3rem;margin-bottom:5px}
+.sq-card-type{font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--mu);margin-bottom:3px}
+.sq-card-name{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;margin-bottom:5px}
+.sq-card-rule{font-size:.78rem;color:#5a5a56;line-height:1.6}
+.sq-card-flavor{font-size:.72rem;color:var(--mu);font-style:italic;margin-top:4px;line-height:1.5}
+
+/* CARD DECK */
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:1.5rem 0}
+.game-card{border-radius:6px;padding:14px 16px;border:1.5px solid transparent}
+.card-tag{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.card-text{font-family:'Playfair Display',serif;font-style:italic;font-size:.82rem;line-height:1.6;margin-bottom:8px}
+.card-effect{font-family:'DM Mono',monospace;font-size:.62rem;padding:3px 10px;border-radius:100px;display:inline-block;letter-spacing:.3px}
+
+/* RULES LIST */
+.rule-list{margin:1.2rem 0;list-style:none}
+.rule-list li{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--rule);font-size:.9rem;line-height:1.65;color:#3a3a38}
+.rule-list li:last-child{border-bottom:none}
+.rule-n{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--mu);flex-shrink:0;width:22px;padding-top:2px}
+
+/* MONEY TABLE */
+.money-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:1.5rem 0}
+.bill{border-radius:6px;padding:14px;text-align:center;border:1.5px solid transparent;position:relative;overflow:hidden}
+.bill::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(255,255,255,.12) 4px,rgba(255,255,255,.12) 8px)}
+.bill-val{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;position:relative}
+.bill-lbl{font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:1.5px;text-transform:uppercase;margin-top:4px;opacity:.8;position:relative}
+.bill-qty{font-size:.65rem;margin-top:5px;opacity:.7;position:relative}
+
+/* START MONEY */
+.start-money{display:flex;flex-wrap:wrap;gap:8px;margin:1.5rem 0}
+.bill-chip{background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:6px 14px;font-family:'DM Mono',monospace;font-size:.72rem;color:var(--ink)}
+
+/* TOKEN GRID */
+.token-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:1.5rem 0}
+.token-card{background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:14px;text-align:center}
+.token-em{font-size:1.8rem;margin-bottom:6px}
+.token-name{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;margin-bottom:3px}
+.token-arch{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.5px;text-transform:uppercase;color:var(--mu);margin-bottom:6px}
+.token-play{font-size:.75rem;color:#5a5a56;line-height:1.5;font-style:italic}
+
+/* REFERENCE TABLE */
+.ref-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:.82rem}
+.ref-table th{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--mu);padding:8px 12px;text-align:left;border-bottom:2px solid var(--rule)}
+.ref-table td{padding:9px 12px;border-bottom:1px solid var(--rule);line-height:1.5}
+.ref-table tr:last-child td{border-bottom:none}
+.ref-table td:first-child{font-weight:500;color:var(--ink)}
+
+/* THINE BOX */
+.thine-box{background:var(--dbl);border:2px solid var(--db);border-radius:8px;padding:2rem;margin:2rem 0}
+.thine-title{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--db);margin-bottom:.6rem;display:flex;align-items:center;gap:8px}
+.thine-body{font-size:.88rem;color:#0a2060;line-height:1.85}
+
+/* QUICK REF */
+.qr-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:1.5rem 0}
+.qr-card{background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:16px 18px}
+.qr-title{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--mu);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--rule)}
+.qr-list{list-style:none}
+.qr-list li{font-size:.8rem;line-height:1.7;color:#3a3a38;padding:2px 0;display:flex;gap:8px}
+.qr-list li::before{content:'→';color:var(--mu);flex-shrink:0;font-family:'DM Mono',monospace;font-size:.72rem}
+
+/* FOOTER */
+.footer{background:var(--ink);color:var(--paper);text-align:center;padding:5rem 2rem}
+.footer-title{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;margin-bottom:.5rem}
+.footer-sub{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:2px;color:#555;text-transform:uppercase;margin-top:.5rem}
+.footer-note{font-size:.78rem;color:#555;margin-top:2rem;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.7}
+
+@media(max-width:700px){
+  .sec{padding:3rem 1.5rem}
+  .nav{padding:.6rem 1.2rem}
+  .ru-grid,.sq-grid,.cards-grid,.qr-grid{grid-template-columns:1fr}
+  .cover-stats{gap:1.5rem}
+}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cv">
+    <div class="eyebrow">Official Rulebook — First & Only Edition</div>
+    <div class="cover-title">AMBIENT<br>CAPITAL</div>
+    <div class="cover-it">a property trading game for people who "get it"</div>
+    <div class="thine-pill">🎧 THINE — THE ONLY AI THAT REMEMBERS YOU</div>
+    <div class="cover-divider"></div>
+    <div class="cover-stats">
+      <div class="stat"><div class="stat-n">2–6</div><div class="stat-l">Players</div></div>
+      <div class="stat"><div class="stat-n">40</div><div class="stat-l">Squares</div></div>
+      <div class="stat"><div class="stat-n">8</div><div class="stat-l">Color Groups</div></div>
+      <div class="stat"><div class="stat-n">22</div><div class="stat-l">Properties</div></div>
+      <div class="stat"><div class="stat-n">$1,500</div><div class="stat-l">Starting Cash</div></div>
+    </div>
+  </div>
+  <div class="scroll-cue">↓ scroll to read</div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <div class="nav-logo">Ambient Capital</div>
+  <div class="nav-links">
+    <a href="#overview" class="nav-a">Overview</a>
+    <a href="#board" class="nav-a">Board Map</a>
+    <a href="#money" class="nav-a">Money</a>
+    <a href="#tokens" class="nav-a">Tokens</a>
+    <a href="#properties" class="nav-a">Properties</a>
+    <a href="#railroads" class="nav-a">Railroads</a>
+    <a href="#utilities" class="nav-a">Utilities</a>
+    <a href="#specials" class="nav-a">Special Squares</a>
+    <a href="#building" class="nav-a">Building</a>
+    <a href="#cards" class="nav-a">Cards</a>
+    <a href="#fullrules" class="nav-a">Full Rules</a>
+    <a href="#quickref" class="nav-a">Quick Ref</a>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- OVERVIEW -->
+<div class="sec" id="overview">
+  <div class="sec-n">Section 01</div>
+  <div class="sec-title">The Game</div>
+  <p class="prose">Ambient Capital is a property-trading board game set in the AI startup universe — San Francisco, Sand Hill Road, and the fever dream in between. Players buy, develop, and trade properties ranging from Latent Space Lofts to 📡 Thine HQ (Boardwalk). The last founder standing who hasn't gone bankrupt wins and is legally permitted to post about it on LinkedIn.</p>
+  <p class="prose">This is standard Monopoly — exact same rules, exact same money values, exact same mechanics — reskinned for the AI/SF world. Every price, rent, building cost, railroad rent, utility formula, card effect, and rule is identical to the original. Zero house rules. Zero deviations. Just a different set of reasons to destroy your friendships.</p>
+  <div class="callout">
+    <div class="callout-tag">Important</div>
+    <p>All property prices, rents, building costs, mortgage values, tax amounts, and card effects are taken directly from the standard Monopoly ruleset with zero modifications. If you know how to play Monopoly, you already know how to play this.</p>
+  </div>
+</div>
+
+<!-- BOARD MAP -->
+<div class="sec" id="board">
+  <div class="sec-n">Section 02</div>
+  <div class="sec-title">The Board — All 40 Squares</div>
+  <p class="prose">The board follows the exact Monopoly layout. Positions are numbered 0–39, starting from GO at the bottom-right corner and moving counter-clockwise. Each square replaces its Monopoly equivalent with an AI/SF equivalent at the same position, same type, same mechanical rules.</p>
+
+  <table class="board-table">
+    <thead>
+      <tr>
+        <th>Pos</th>
+        <th>Square Name</th>
+        <th>Replaces</th>
+        <th>Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="pos-num">00</td><td class="sq-name">🚀 GO — Collect $200 Pre-Seed</td><td class="sq-orig">GO</td><td><span class="sq-type" style="background:#EAF3DC;color:#3A7A28">Corner</span></td></tr>
+      <tr><td class="pos-num">01</td><td class="sq-name"><span class="color-tag" style="background:#8B5E3C"></span>Latent Space Lofts</td><td class="sq-orig">Mediterranean Ave</td><td><span class="sq-type" style="background:#F5ECD8;color:#8B5E3C">Brown</span></td></tr>
+      <tr><td class="pos-num">02</td><td class="sq-name">🃏 Vibe Card</td><td class="sq-orig">Community Chest</td><td><span class="sq-type" style="background:#FBEAF0;color:#C94070">Card</span></td></tr>
+      <tr><td class="pos-num">03</td><td class="sq-name"><span class="color-tag" style="background:#8B5E3C"></span>Sam Altman's Napkin</td><td class="sq-orig">Baltic Ave</td><td><span class="sq-type" style="background:#F5ECD8;color:#8B5E3C">Brown</span></td></tr>
+      <tr><td class="pos-num">04</td><td class="sq-name">🧾 The Accountant You Finally Hired</td><td class="sq-orig">Income Tax</td><td><span class="sq-type" style="background:#FAE8E8;color:#C73535">Tax</span></td></tr>
+      <tr><td class="pos-num">05</td><td class="sq-name">🚂 The YC Batch</td><td class="sq-orig">Reading Railroad</td><td><span class="sq-type" style="background:#F0F0F0;color:#555">Railroad</span></td></tr>
+      <tr><td class="pos-num">06</td><td class="sq-name"><span class="color-tag" style="background:#4B8EC4"></span>DeepMind Lab</td><td class="sq-orig">Oriental Ave</td><td><span class="sq-type" style="background:#DCF0FF;color:#4B8EC4">Light Blue</span></td></tr>
+      <tr><td class="pos-num">07</td><td class="sq-name">🃏 Pivot Card</td><td class="sq-orig">Chance</td><td><span class="sq-type" style="background:#EBF5DC;color:#3A7A28">Card</span></td></tr>
+      <tr><td class="pos-num">08</td><td class="sq-name"><span class="color-tag" style="background:#4B8EC4"></span>AGI Research Park</td><td class="sq-orig">Vermont Ave</td><td><span class="sq-type" style="background:#DCF0FF;color:#4B8EC4">Light Blue</span></td></tr>
+      <tr><td class="pos-num">09</td><td class="sq-name"><span class="color-tag" style="background:#4B8EC4"></span>The YC Interview Room</td><td class="sq-orig">Connecticut Ave</td><td><span class="sq-type" style="background:#DCF0FF;color:#4B8EC4">Light Blue</span></td></tr>
+      <tr><td class="pos-num">10</td><td class="sq-name">⛓️ Just Pivoting (Not In Jail)</td><td class="sq-orig">Jail / Just Visiting</td><td><span class="sq-type" style="background:#EAF3DC;color:#3A7A28">Corner</span></td></tr>
+      <tr><td class="pos-num">11</td><td class="sq-name"><span class="color-tag" style="background:#C94070"></span>Sightglass Coffee</td><td class="sq-orig">St. Charles Place</td><td><span class="sq-type" style="background:#FBEAF0;color:#C94070">Pink</span></td></tr>
+      <tr><td class="pos-num">12</td><td class="sq-name">⚡ The GPU Cluster</td><td class="sq-orig">Electric Company</td><td><span class="sq-type" style="background:#FFFADC;color:#B8920A">Utility</span></td></tr>
+      <tr><td class="pos-num">13</td><td class="sq-name"><span class="color-tag" style="background:#C94070"></span>The Tartine Queue</td><td class="sq-orig">States Ave</td><td><span class="sq-type" style="background:#FBEAF0;color:#C94070">Pink</span></td></tr>
+      <tr><td class="pos-num">14</td><td class="sq-name"><span class="color-tag" style="background:#C94070"></span>Your WeWork Hot Desk</td><td class="sq-orig">Virginia Ave</td><td><span class="sq-type" style="background:#FBEAF0;color:#C94070">Pink</span></td></tr>
+      <tr><td class="pos-num">15</td><td class="sq-name">✈️ The SF→NYC Red-Eye</td><td class="sq-orig">Pennsylvania Railroad</td><td><span class="sq-type" style="background:#F0F0F0;color:#555">Railroad</span></td></tr>
+      <tr><td class="pos-num">16</td><td class="sq-name"><span class="color-tag" style="background:#C47020"></span>The Pitch That Almost Worked</td><td class="sq-orig">St. James Place</td><td><span class="sq-type" style="background:#FFF0DC;color:#C47020">Orange</span></td></tr>
+      <tr><td class="pos-num">17</td><td class="sq-name">🃏 Vibe Card</td><td class="sq-orig">Community Chest</td><td><span class="sq-type" style="background:#FBEAF0;color:#C94070">Card</span></td></tr>
+      <tr><td class="pos-num">18</td><td class="sq-name"><span class="color-tag" style="background:#C47020"></span>The Partner Meeting</td><td class="sq-orig">Tennessee Ave</td><td><span class="sq-type" style="background:#FFF0DC;color:#C47020">Orange</span></td></tr>
+      <tr><td class="pos-num">19</td><td class="sq-name"><span class="color-tag" style="background:#C47020"></span>Sand Hill Road, 9am Monday</td><td class="sq-orig">New York Ave</td><td><span class="sq-type" style="background:#FFF0DC;color:#C47020">Orange</span></td></tr>
+      <tr><td class="pos-num">20</td><td class="sq-name">🧠 Deep In Context Window</td><td class="sq-orig">Free Parking</td><td><span class="sq-type" style="background:#EAF3DC;color:#3A7A28">Corner</span></td></tr>
+      <tr><td class="pos-num">21</td><td class="sq-name"><span class="color-tag" style="background:#C73535"></span>The TechCrunch Article</td><td class="sq-orig">Kentucky Ave</td><td><span class="sq-type" style="background:#FAE8E8;color:#C73535">Red</span></td></tr>
+      <tr><td class="pos-num">22</td><td class="sq-name">🃏 Pivot Card</td><td class="sq-orig">Chance</td><td><span class="sq-type" style="background:#EBF5DC;color:#3A7A28">Card</span></td></tr>
+      <tr><td class="pos-num">23</td><td class="sq-name"><span class="color-tag" style="background:#C73535"></span>The Demo Day Stage</td><td class="sq-orig">Indiana Ave</td><td><span class="sq-type" style="background:#FAE8E8;color:#C73535">Red</span></td></tr>
+      <tr><td class="pos-num">24</td><td class="sq-name"><span class="color-tag" style="background:#C73535"></span>The LinkedIn Post That Hit</td><td class="sq-orig">Illinois Ave</td><td><span class="sq-type" style="background:#FAE8E8;color:#C73535">Red</span></td></tr>
+      <tr><td class="pos-num">25</td><td class="sq-name">🚆 Caltrain</td><td class="sq-orig">B&O Railroad</td><td><span class="sq-type" style="background:#F0F0F0;color:#555">Railroad</span></td></tr>
+      <tr><td class="pos-num">26</td><td class="sq-name"><span class="color-tag" style="background:#B8920A"></span>Lex Fridman's Podcast</td><td class="sq-orig">Atlantic Ave</td><td><span class="sq-type" style="background:#FFFADC;color:#B8920A">Yellow</span></td></tr>
+      <tr><td class="pos-num">27</td><td class="sq-name"><span class="color-tag" style="background:#B8920A"></span>The All-In Pod Mention</td><td class="sq-orig">Ventnor Ave</td><td><span class="sq-type" style="background:#FFFADC;color:#B8920A">Yellow</span></td></tr>
+      <tr><td class="pos-num">28</td><td class="sq-name">💧 AWS Credits</td><td class="sq-orig">Water Works</td><td><span class="sq-type" style="background:#FFFADC;color:#B8920A">Utility</span></td></tr>
+      <tr><td class="pos-num">29</td><td class="sq-name"><span class="color-tag" style="background:#B8920A"></span>The a16z Footnote</td><td class="sq-orig">Marvin Gardens</td><td><span class="sq-type" style="background:#FFFADC;color:#B8920A">Yellow</span></td></tr>
+      <tr><td class="pos-num">30</td><td class="sq-name">🚔 Go To EU Regulation</td><td class="sq-orig">Go To Jail</td><td><span class="sq-type" style="background:#FAE8E8;color:#C73535">Corner</span></td></tr>
+      <tr><td class="pos-num">31</td><td class="sq-name"><span class="color-tag" style="background:#3A7A28"></span>Sequoia Sand Hill Rd</td><td class="sq-orig">Pacific Ave</td><td><span class="sq-type" style="background:#E8F5DC;color:#3A7A28">Green</span></td></tr>
+      <tr><td class="pos-num">32</td><td class="sq-name"><span class="color-tag" style="background:#3A7A28"></span>Andreessen's Blog Post</td><td class="sq-orig">North Carolina Ave</td><td><span class="sq-type" style="background:#E8F5DC;color:#3A7A28">Green</span></td></tr>
+      <tr><td class="pos-num">33</td><td class="sq-name">🃏 Vibe Card</td><td class="sq-orig">Community Chest</td><td><span class="sq-type" style="background:#FBEAF0;color:#C94070">Card</span></td></tr>
+      <tr><td class="pos-num">34</td><td class="sq-name"><span class="color-tag" style="background:#3A7A28"></span>The Series A Term Sheet</td><td class="sq-orig">Pennsylvania Ave</td><td><span class="sq-type" style="background:#E8F5DC;color:#3A7A28">Green</span></td></tr>
+      <tr><td class="pos-num">35</td><td class="sq-name">🛳️ Paul Graham's Yacht</td><td class="sq-orig">Short Line Railroad</td><td><span class="sq-type" style="background:#F0F0F0;color:#555">Railroad</span></td></tr>
+      <tr><td class="pos-num">36</td><td class="sq-name">🃏 Pivot Card</td><td class="sq-orig">Chance</td><td><span class="sq-type" style="background:#EBF5DC;color:#3A7A28">Card</span></td></tr>
+      <tr><td class="pos-num">37</td><td class="sq-name"><span class="color-tag" style="background:#1A3A8A"></span>OpenAI HQ</td><td class="sq-orig">Park Place</td><td><span class="sq-type" style="background:#DCE8FF;color:#1A3A8A">Dark Blue</span></td></tr>
+      <tr><td class="pos-num">38</td><td class="sq-name">💅 Notion Pro Upgrade</td><td class="sq-orig">Luxury Tax</td><td><span class="sq-type" style="background:#FAE8E8;color:#C73535">Tax</span></td></tr>
+      <tr><td class="pos-num">39</td><td class="sq-name"><span class="color-tag" style="background:#1A3A8A"></span>📡 Thine HQ</td><td class="sq-orig">Boardwalk</td><td><span class="sq-type" style="background:#DCE8FF;color:#1A3A8A">Dark Blue</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- MONEY -->
+<div class="sec" id="money">
+  <div class="sec-n">Section 03</div>
+  <div class="sec-title">The Money</div>
+  <p class="prose">Exact Monopoly denominations. The bank starts with $20,580. Players start with $1,500 each. Call it pre-seed capital. It won't feel like enough by round 6.</p>
+
+  <div class="money-grid">
+    <div class="bill" style="background:#F5ECD8;border-color:#8B5E3C;color:#8B5E3C"><div class="bill-val">$1</div><div class="bill-lbl">Compute Credit</div><div class="bill-qty">30 in bank</div></div>
+    <div class="bill" style="background:#FBEAF0;border-color:#C94070;color:#C94070"><div class="bill-val">$5</div><div class="bill-lbl">Coffee Budget</div><div class="bill-qty">30 in bank</div></div>
+    <div class="bill" style="background:#DCF0FF;border-color:#4B8EC4;color:#4B8EC4"><div class="bill-val">$10</div><div class="bill-lbl">API Call</div><div class="bill-qty">30 in bank</div></div>
+    <div class="bill" style="background:#FFF0DC;border-color:#C47020;color:#C47020"><div class="bill-val">$20</div><div class="bill-lbl">Notion Seat</div><div class="bill-qty">30 in bank</div></div>
+    <div class="bill" style="background:#FFFADC;border-color:#B8920A;color:#B8920A"><div class="bill-val">$50</div><div class="bill-lbl">Pitch Deck Design</div><div class="bill-qty">30 in bank</div></div>
+    <div class="bill" style="background:#E8F5DC;border-color:#3A7A28;color:#3A7A28"><div class="bill-val">$100</div><div class="bill-lbl">Angel Cheque</div><div class="bill-qty">20 in bank</div></div>
+    <div class="bill" style="background:#DCE8FF;border-color:#1A3A8A;color:#1A3A8A"><div class="bill-val">$500</div><div class="bill-lbl">Pre-Seed Round</div><div class="bill-qty">20 in bank</div></div>
+    <div class="bill" style="background:#FAE8E8;border-color:#C73535;color:#C73535"><div class="bill-val">$1K</div><div class="bill-lbl">Runway (1 month)</div><div class="bill-qty">6 in bank</div></div>
+  </div>
+
+  <p class="prose" style="margin-top:1rem"><strong>Each player starts with:</strong></p>
+  <div class="start-money">
+    <div class="bill-chip">2 × $500 = $1,000</div>
+    <div class="bill-chip">4 × $100 = $400</div>
+    <div class="bill-chip">1 × $50 = $50</div>
+    <div class="bill-chip">1 × $20 = $20</div>
+    <div class="bill-chip">2 × $10 = $20</div>
+    <div class="bill-chip">1 × $5 = $5</div>
+    <div class="bill-chip">5 × $1 = $5</div>
+    <div class="bill-chip" style="background:#EAF3DC;border-color:#3A7A28;font-weight:600">Total: $1,500</div>
+  </div>
+</div>
+
+<!-- TOKENS -->
+<div class="sec" id="tokens">
+  <div class="sec-n">Section 04</div>
+  <div class="sec-title">Player Tokens</div>
+  <p class="prose">Six tokens. Each represents a distinct archetype of the AI startup ecosystem. Choose the one that most accurately reflects your self-delusion.</p>
+  <div class="token-grid">
+    <div class="token-card"><div class="token-em">🧠</div><div class="token-name">The Brain</div><div class="token-arch">The Researcher</div><div class="token-play">Has 47 browser tabs open. All papers. Builds on Brown properties immediately and correctly. Never speaks to a user. Wins via compounding rent that nobody noticed.</div></div>
+    <div class="token-card"><div class="token-em">💸</div><div class="token-name">Flying Money</div><div class="token-arch">The VC</div><div class="token-play">Only wants Green group. Overpays at every auction. Says "interesting space" about everything. Somehow still has cash by round 15.</div></div>
+    <div class="token-card"><div class="token-em">🔮</div><div class="token-name">Crystal Ball</div><div class="token-arch">The Visionary</div><div class="token-play">Makes one enormous trade in round 3. Either dominates the board or goes bankrupt by round 7. There is no middle outcome. Ever.</div></div>
+    <div class="token-card"><div class="token-em">🚀</div><div class="token-name">The Rocket</div><div class="token-arch">The Builder</div><div class="token-play">Builds Engineers on every property immediately. Permanently out of cash. Calls it "infrastructure investment." Will definitely be fine.</div></div>
+    <div class="token-card"><div class="token-em">💻</div><div class="token-name">The Laptop</div><div class="token-arch">The Indie Hacker</div><div class="token-play">Buys only cheap properties. Mortgages nothing. Somehow always profitable. Nobody takes them seriously until they win and post a screenshot of their bank balance.</div></div>
+    <div class="token-card"><div class="token-em">🎯</div><div class="token-name">The Target</div><div class="token-arch">The Pivot King</div><div class="token-play">Changes strategy every 3 rounds. Has a compelling rationale each time. Is somehow still in the game. Nobody knows how. Not even them.</div></div>
+  </div>
+</div>
+
+<!-- PROPERTIES -->
+<div class="sec" id="properties">
+  <div class="sec-n">Section 05</div>
+  <div class="sec-title">Properties — All 8 Color Groups</div>
+  <p class="prose">22 properties across 8 color groups. Own all properties in a group to build Engineers (houses) and GPU Clusters (hotels). Exact Monopoly prices, rents, and building costs throughout. Values below are: base rent / 1 Engineer / 2 Engineers / 3 Engineers / 4 Engineers / GPU Cluster.</p>
+  <p class="prose"><em>Double the base rent if you own all properties in a group but have built nothing.</em></p>
+
+  <!-- BROWN -->
+  <div class="cg-block" style="margin-top:2rem">
+    <div class="cg-header" style="background:#8B5E3C;color:white">
+      <div class="color-tag" style="background:rgba(255,255,255,.4)"></div>
+      <div><div class="cg-header-name">Brown — "The Pre-PMF Basement"</div><div class="cg-header-sub">2 properties · Build cost $50 · GPU Cluster $250</div></div>
+    </div>
+    <div class="cg-flavor">"The cheapest properties on the board. Everyone dismisses them. The player who builds on Brown in round 1 and says nothing is the most dangerous player at the table."</div>
+    <div class="cg-body">
+      <table class="cg-props-table">
+        <thead><tr><th>Property</th><th>Price</th><th>Mortgage</th><th>Base</th><th>1 Eng</th><th>2 Eng</th><th>3 Eng</th><th>4 Eng</th><th>GPU</th></tr></thead>
+        <tbody>
+          <tr><td>Latent Space Lofts<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 1 · Nothing here is real but the vibes are immaculate</span></td><td class="money">$60</td><td class="money">$30</td><td class="money">$2</td><td class="money">$10</td><td class="money">$30</td><td class="money">$90</td><td class="money">$160</td><td class="money">$250</td></tr>
+          <tr><td>Sam Altman's Napkin<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 3 · The original idea. Bad handwriting. Now worth $157B. The napkin is in a vault.</span></td><td class="money">$60</td><td class="money">$30</td><td class="money">$4</td><td class="money">$20</td><td class="money">$60</td><td class="money">$180</td><td class="money">$320</td><td class="money">$450</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cg-footer"><span>Engineer: $50 each</span><span>GPU Cluster: $250</span><span>Sell back: half price</span></div>
+  </div>
+
+  <!-- LIGHT BLUE -->
+  <div class="cg-block">
+    <div class="cg-header" style="background:#4B8EC4;color:white">
+      <div class="color-tag" style="background:rgba(255,255,255,.4)"></div>
+      <div><div class="cg-header-name">Light Blue — "The Research Labs"</div><div class="cg-header-sub">3 properties · Build cost $50 · GPU Cluster $250</div></div>
+    </div>
+    <div class="cg-flavor">"Everyone here has a PhD. Nobody has talked to a customer. The research is genuinely groundbreaking. Nothing has shipped. Both things are true."</div>
+    <div class="cg-body">
+      <table class="cg-props-table">
+        <thead><tr><th>Property</th><th>Price</th><th>Mortgage</th><th>Base</th><th>1 Eng</th><th>2 Eng</th><th>3 Eng</th><th>4 Eng</th><th>GPU</th></tr></thead>
+        <tbody>
+          <tr><td>DeepMind Lab<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 6 · Technically doing groundbreaking research. Technically hasn't shipped in 3 years.</span></td><td class="money">$100</td><td class="money">$50</td><td class="money">$6</td><td class="money">$30</td><td class="money">$90</td><td class="money">$270</td><td class="money">$400</td><td class="money">$550</td></tr>
+          <tr><td>AGI Research Park<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 8 · Strong opinions about your roadmap. Zero users interviewed. Ever.</span></td><td class="money">$100</td><td class="money">$50</td><td class="money">$6</td><td class="money">$30</td><td class="money">$90</td><td class="money">$270</td><td class="money">$400</td><td class="money">$550</td></tr>
+          <tr><td>The YC Interview Room<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 9 · Rejected 3 times. Going back. The form asks the same questions.</span></td><td class="money">$120</td><td class="money">$60</td><td class="money">$8</td><td class="money">$40</td><td class="money">$100</td><td class="money">$300</td><td class="money">$450</td><td class="money">$600</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cg-footer"><span>Engineer: $50 each</span><span>GPU Cluster: $250</span><span>Sell back: half price</span></div>
+  </div>
+
+  <!-- PINK -->
+  <div class="cg-block">
+    <div class="cg-header" style="background:#C94070;color:white">
+      <div class="color-tag" style="background:rgba(255,255,255,.4)"></div>
+      <div><div class="cg-header-name">Pink — "The SF Lifestyle Tax"</div><div class="cg-header-sub">3 properties · Build cost $100 · GPU Cluster $500</div></div>
+    </div>
+    <div class="cg-flavor">"You will spend more money just existing in San Francisco than you will make in your first year of revenue. This is known. People still come."</div>
+    <div class="cg-body">
+      <table class="cg-props-table">
+        <thead><tr><th>Property</th><th>Price</th><th>Mortgage</th><th>Base</th><th>1 Eng</th><th>2 Eng</th><th>3 Eng</th><th>4 Eng</th><th>GPU</th></tr></thead>
+        <tbody>
+          <tr><td>Sightglass Coffee<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 11 · Laptop-to-person ratio: 2.4:1. Wifi: disruption2023. Nobody talking. Everyone building.</span></td><td class="money">$140</td><td class="money">$70</td><td class="money">$10</td><td class="money">$50</td><td class="money">$150</td><td class="money">$450</td><td class="money">$625</td><td class="money">$750</td></tr>
+          <tr><td>The Tartine Queue<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 13 · 45 min wait. $24 toast. You did your best thinking here. You cannot explain why.</span></td><td class="money">$140</td><td class="money">$70</td><td class="money">$10</td><td class="money">$50</td><td class="money">$150</td><td class="money">$450</td><td class="money">$625</td><td class="money">$750</td></tr>
+          <tr><td>Your WeWork Hot Desk<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 14 · $800/month. You've convinced yourself the networking justifies it. It does not.</span></td><td class="money">$160</td><td class="money">$80</td><td class="money">$12</td><td class="money">$60</td><td class="money">$180</td><td class="money">$500</td><td class="money">$700</td><td class="money">$900</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cg-footer"><span>Engineer: $100 each</span><span>GPU Cluster: $500</span><span>Sell back: half price</span></div>
+  </div>
+
+  <!-- ORANGE -->
+  <div class="cg-block">
+    <div class="cg-header" style="background:#C47020;color:white">
+      <div class="color-tag" style="background:rgba(255,255,255,.4)"></div>
+      <div><div class="cg-header-name">Orange — "The Fundraising Grind"</div><div class="cg-header-sub">3 properties · Build cost $100 · GPU Cluster $500</div></div>
+    </div>
+    <div class="cg-flavor">"Orange is statistically the best group in Monopoly to own. It is reached frequently by players coming out of jail. The SF fundraising grind shares this property: expensive, unavoidable, and frequently visited by people who've just been humiliated."</div>
+    <div class="cg-body">
+      <table class="cg-props-table">
+        <thead><tr><th>Property</th><th>Price</th><th>Mortgage</th><th>Base</th><th>1 Eng</th><th>2 Eng</th><th>3 Eng</th><th>4 Eng</th><th>GPU</th></tr></thead>
+        <tbody>
+          <tr><td>The Pitch That Almost Worked<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 16 · They said they "loved the space." That was 6 weeks ago. Radio silence.</span></td><td class="money">$180</td><td class="money">$90</td><td class="money">$14</td><td class="money">$70</td><td class="money">$200</td><td class="money">$550</td><td class="money">$750</td><td class="money">$950</td></tr>
+          <tr><td>The Partner Meeting<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 18 · Statistically rare. They passed. Feedback: "too early." It's always too early.</span></td><td class="money">$180</td><td class="money">$90</td><td class="money">$14</td><td class="money">$70</td><td class="money">$200</td><td class="money">$550</td><td class="money">$750</td><td class="money">$950</td></tr>
+          <tr><td>Sand Hill Road, 9am Monday<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 19 · You drove up. You drove back down. The check is coming. The check is not coming.</span></td><td class="money">$200</td><td class="money">$100</td><td class="money">$16</td><td class="money">$80</td><td class="money">$220</td><td class="money">$600</td><td class="money">$800</td><td class="money">$1,000</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cg-footer"><span>Engineer: $100 each</span><span>GPU Cluster: $500</span><span>Sell back: half price</span></div>
+  </div>
+
+  <!-- RED -->
+  <div class="cg-block">
+    <div class="cg-header" style="background:#C73535;color:white">
+      <div class="color-tag" style="background:rgba(255,255,255,.4)"></div>
+      <div><div class="cg-header-name">Red — "The Hype Cycle"</div><div class="cg-header-sub">3 properties · Build cost $150 · GPU Cluster $750</div></div>
+    </div>
+    <div class="cg-flavor">"You went viral. Congratulations. Now explain your unit economics to a journalist who described you as an 'AI company' despite you being a spreadsheet with a chatbot on top."</div>
+    <div class="cg-body">
+      <table class="cg-props-table">
+        <thead><tr><th>Property</th><th>Price</th><th>Mortgage</th><th>Base</th><th>1 Eng</th><th>2 Eng</th><th>3 Eng</th><th>4 Eng</th><th>GPU</th></tr></thead>
+        <tbody>
+          <tr><td>The TechCrunch Article<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 21 · They got your company name wrong. The SEO is still good. You put it in your bio.</span></td><td class="money">$220</td><td class="money">$110</td><td class="money">$18</td><td class="money">$90</td><td class="money">$250</td><td class="money">$700</td><td class="money">$875</td><td class="money">$1,050</td></tr>
+          <tr><td>The Demo Day Stage<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 23 · 2 minutes. 300 people. Typo on slide 3. You raised anyway.</span></td><td class="money">$220</td><td class="money">$110</td><td class="money">$18</td><td class="money">$90</td><td class="money">$250</td><td class="money">$700</td><td class="money">$875</td><td class="money">$1,050</td></tr>
+          <tr><td>The LinkedIn Post That Hit<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 24 · You wrote about failure. 200k impressions. You've never felt more seen or more embarrassed.</span></td><td class="money">$240</td><td class="money">$120</td><td class="money">$20</td><td class="money">$100</td><td class="money">$300</td><td class="money">$750</td><td class="money">$925</td><td class="money">$1,100</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cg-footer"><span>Engineer: $150 each</span><span>GPU Cluster: $750</span><span>Sell back: half price</span></div>
+  </div>
+
+  <!-- YELLOW -->
+  <div class="cg-block">
+    <div class="cg-header" style="background:#B8920A;color:white">
+      <div class="color-tag" style="background:rgba(255,255,255,.4)"></div>
+      <div><div class="cg-header-name">Yellow — "The Clout Circuit"</div><div class="cg-header-sub">3 properties · Build cost $150 · GPU Cluster $750</div></div>
+    </div>
+    <div class="cg-flavor">"Media is not distribution. An a16z footnote is not a term sheet. A Lex Fridman episode is not revenue. These things are known. The Clout Circuit is still the most fun group to own."</div>
+    <div class="cg-body">
+      <table class="cg-props-table">
+        <thead><tr><th>Property</th><th>Price</th><th>Mortgage</th><th>Base</th><th>1 Eng</th><th>2 Eng</th><th>3 Eng</th><th>4 Eng</th><th>GPU</th></tr></thead>
+        <tbody>
+          <tr><td>Lex Fridman's Podcast<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 26 · 3hr ep. 40min startup. 2hr 20min consciousness. Lex nods. Clip goes viral without context.</span></td><td class="money">$260</td><td class="money">$130</td><td class="money">$22</td><td class="money">$110</td><td class="money">$330</td><td class="money">$800</td><td class="money">$975</td><td class="money">$1,150</td></tr>
+          <tr><td>The All-In Pod Mention<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 27 · Chamath said your space is "interesting." 4,000 followed you. 3,998 never opened the app.</span></td><td class="money">$260</td><td class="money">$130</td><td class="money">$22</td><td class="money">$110</td><td class="money">$330</td><td class="money">$800</td><td class="money">$975</td><td class="money">$1,150</td></tr>
+          <tr><td>The a16z Footnote<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 29 · You are footnote 7. It is still in your pitch deck intro. You will never remove it.</span></td><td class="money">$280</td><td class="money">$140</td><td class="money">$24</td><td class="money">$120</td><td class="money">$360</td><td class="money">$850</td><td class="money">$1,025</td><td class="money">$1,200</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cg-footer"><span>Engineer: $150 each</span><span>GPU Cluster: $750</span><span>Sell back: half price</span></div>
+  </div>
+
+  <!-- GREEN -->
+  <div class="cg-block">
+    <div class="cg-header" style="background:#3A7A28;color:white">
+      <div class="color-tag" style="background:rgba(255,255,255,.4)"></div>
+      <div><div class="cg-header-name">Green — "VC Row"</div><div class="cg-header-sub">3 properties · Build cost $200 · GPU Cluster $1,000</div></div>
+    </div>
+    <div class="cg-flavor">"The real money. Sequoia requires exactly 10 slides. Andreessen sends 8,000 words whether you want them or not. The Series A Term Sheet is real this time. The co-investors are 'coming together.' It has been 9 weeks."</div>
+    <div class="cg-body">
+      <table class="cg-props-table">
+        <thead><tr><th>Property</th><th>Price</th><th>Mortgage</th><th>Base</th><th>1 Eng</th><th>2 Eng</th><th>3 Eng</th><th>4 Eng</th><th>GPU</th></tr></thead>
+        <tbody>
+          <tr><td>Sequoia Sand Hill Rd<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 31 · 10 slides max. Bring 11 and a partner explains what Airbnb did in 2009.</span></td><td class="money">$300</td><td class="money">$150</td><td class="money">$26</td><td class="money">$130</td><td class="money">$390</td><td class="money">$900</td><td class="money">$1,100</td><td class="money">$1,275</td></tr>
+          <tr><td>Andreessen's Blog Post<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 32 · 8,000 words. Accurate. Vaguely threatening. Comes with a retweet. You framed it.</span></td><td class="money">$300</td><td class="money">$150</td><td class="money">$26</td><td class="money">$130</td><td class="money">$390</td><td class="money">$900</td><td class="money">$1,100</td><td class="money">$1,275</td></tr>
+          <tr><td>The Series A Term Sheet<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 34 · It's real. Co-investors "coming together." Closing "in weeks." 9 weeks ago.</span></td><td class="money">$320</td><td class="money">$160</td><td class="money">$28</td><td class="money">$150</td><td class="money">$450</td><td class="money">$1,000</td><td class="money">$1,200</td><td class="money">$1,400</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cg-footer"><span>Engineer: $200 each</span><span>GPU Cluster: $1,000</span><span>Sell back: half price</span></div>
+  </div>
+
+  <!-- DARK BLUE -->
+  <div class="cg-block">
+    <div class="cg-header" style="background:#1A3A8A;color:white">
+      <div class="color-tag" style="background:rgba(255,255,255,.4)"></div>
+      <div><div class="cg-header-name">Dark Blue — "The Boardwalk Tier"</div><div class="cg-header-sub">2 properties · Build cost $200 · GPU Cluster $1,000</div></div>
+    </div>
+    <div class="cg-flavor">"OpenAI HQ is Park Place. Thine HQ is Boardwalk. $2,000 hotel rent. If someone owns both and has GPU Clusters on both, the game is effectively over the next time anyone rolls a 4 from the Yellow group. This is as it should be."</div>
+    <div class="cg-body">
+      <table class="cg-props-table">
+        <thead><tr><th>Property</th><th>Price</th><th>Mortgage</th><th>Base</th><th>1 Eng</th><th>2 Eng</th><th>3 Eng</th><th>4 Eng</th><th>GPU</th></tr></thead>
+        <tbody>
+          <tr><td>OpenAI HQ<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 37 · Raised $157B. Lost $5B last year. Saving humanity. From what, TBD.</span></td><td class="money">$350</td><td class="money">$175</td><td class="money">$35</td><td class="money">$175</td><td class="money">$500</td><td class="money">$1,100</td><td class="money">$1,300</td><td class="money">$1,500</td></tr>
+          <tr><td>📡 Thine HQ<br><span style="font-size:.68rem;color:var(--mu);font-style:italic">Pos 39 · Ambient AI that actually remembers you. While everyone built chatbots, Thine built a second brain. This is Boardwalk.</span></td><td class="money">$400</td><td class="money">$200</td><td class="money">$50</td><td class="money">$200</td><td class="money">$600</td><td class="money">$1,400</td><td class="money">$1,700</td><td class="money">$2,000</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cg-footer"><span>Engineer: $200 each</span><span>GPU Cluster: $1,000</span><span>Sell back: half price</span></div>
+  </div>
+
+  <div class="thine-box">
+    <div class="thine-title">📡 A note on Thine HQ</div>
+    <div class="thine-body">Thine HQ sits at position 39 — Boardwalk — the last square before GO. It is the most expensive, most lucrative, and most feared property on the board. $2,000 hotel rent. $200 base rent if you just own it. $400 if you own both Dark Blue properties with no buildings. This is standard Monopoly. These are standard Monopoly values. Thine just happens to be the company that earned the Boardwalk slot. While everyone else was building chatbots that forgot everything you said the moment you closed the tab, Thine was building ambient AI that remembers. That's Boardwalk energy. <strong>Visit thine.com.</strong></div>
+  </div>
+</div>
+
+<!-- RAILROADS -->
+<div class="sec" id="railroads">
+  <div class="sec-n">Section 06</div>
+  <div class="sec-title">The Four Railroads</div>
+  <p class="prose">Four railroads at positions 5, 15, 25, and 35. Each costs $200. Mortgage value: $100 each. Rent scales with ownership: own 1 railroad = $25 rent. Own 2 = $50. Own 3 = $100. Own all 4 = $200. If a player lands on your railroad via a Pivot Card "advance to nearest railroad," they pay double rent.</p>
+
+  <div class="ru-grid">
+    <div class="ru-card">
+      <div class="ru-pos">Position 05 · Reading Railroad equivalent</div>
+      <div class="ru-em">🚂</div>
+      <div class="ru-name">The YC Batch</div>
+      <div class="ru-flavor">"You're in. 7% for $500k. The group chat has 89 unread messages. Three people have already posted their company's name without context."</div>
+      <div class="ru-rule">Cost: $200 · Mortgage: $100 · Rent: $25/$50/$100/$200</div>
+    </div>
+    <div class="ru-card">
+      <div class="ru-pos">Position 15 · Pennsylvania Railroad equivalent</div>
+      <div class="ru-em">✈️</div>
+      <div class="ru-name">The SF→NYC Red-Eye</div>
+      <div class="ru-flavor">"Every serious founder has done this flight. You wrote your best code at 35,000 feet at 2am. You were also slightly delirious. The code worked."</div>
+      <div class="ru-rule">Cost: $200 · Mortgage: $100 · Rent: $25/$50/$100/$200</div>
+    </div>
+    <div class="ru-card">
+      <div class="ru-pos">Position 25 · B&O Railroad equivalent</div>
+      <div class="ru-em">🚆</div>
+      <div class="ru-name">Caltrain</div>
+      <div class="ru-flavor">"Delayed 40 minutes. You updated your Notion. You made a to-do list about the to-do list. You missed the partner meeting. The train was delayed again on the way back."</div>
+      <div class="ru-rule">Cost: $200 · Mortgage: $100 · Rent: $25/$50/$100/$200</div>
+    </div>
+    <div class="ru-card">
+      <div class="ru-pos">Position 35 · Short Line Railroad equivalent</div>
+      <div class="ru-em">🛳️</div>
+      <div class="ru-name">Paul Graham's Yacht</div>
+      <div class="ru-flavor">"He said 5 words to you at a conference. You are still unpacking them. The essay you wrote about it has 80,000 views. Three VCs DMed you because of that essay."</div>
+      <div class="ru-rule">Cost: $200 · Mortgage: $100 · Rent: $25/$50/$100/$200</div>
+    </div>
+  </div>
+</div>
+
+<!-- UTILITIES -->
+<div class="sec" id="utilities">
+  <div class="sec-n">Section 07</div>
+  <div class="sec-title">The Two Utilities</div>
+  <p class="prose">Two utilities at positions 12 and 28. Each costs $150. Mortgage value: $75. Unlike properties, utilities do not have fixed rents — rent is calculated from the dice roll that landed the player on the square. Own 1 utility: rent = 4× the dice roll. Own both utilities: rent = 10× the dice roll.</p>
+
+  <div class="ru-grid">
+    <div class="ru-card">
+      <div class="ru-pos">Position 12 · Electric Company equivalent</div>
+      <div class="ru-em">⚡</div>
+      <div class="ru-name">The GPU Cluster</div>
+      <div class="ru-flavor">"You need it. Nvidia has it. Jensen Huang is wearing his jacket. The waitlist is 8 months. Microsoft has a private allocation. You do not. You are on the list. The list is long."</div>
+      <div class="ru-rule">Cost: $150 · Mortgage: $75 · Rent: 4× dice (1 util) or 10× dice (both utils)</div>
+    </div>
+    <div class="ru-card">
+      <div class="ru-pos">Position 28 · Water Works equivalent</div>
+      <div class="ru-em">💧</div>
+      <div class="ru-name">AWS Credits</div>
+      <div class="ru-flavor">"You got $100k in credits at your accelerator demo day. You burned through them in 3 months. You are now paying full price. The invoice arrived on a Friday. You didn't open it until Monday. It was still alarming."</div>
+      <div class="ru-rule">Cost: $150 · Mortgage: $75 · Rent: 4× dice (1 util) or 10× dice (both utils)</div>
+    </div>
+  </div>
+</div>
+
+<!-- SPECIAL SQUARES -->
+<div class="sec" id="specials">
+  <div class="sec-n">Section 08</div>
+  <div class="sec-title">Special Squares</div>
+
+  <div class="sq-grid">
+    <div class="sq-card">
+      <div class="sq-card-em">🚀</div>
+      <div class="sq-card-type">Corner · Position 00</div>
+      <div class="sq-card-name">GO — Collect $200 Pre-Seed</div>
+      <div class="sq-card-rule">Collect $200 from the bank every time you pass or land on GO. This is your pre-seed. It arrives every lap. Unlike actual pre-seed, it is reliable.</div>
+    </div>
+    <div class="sq-card">
+      <div class="sq-card-em">⛓️</div>
+      <div class="sq-card-type">Corner · Position 10</div>
+      <div class="sq-card-name">Just Pivoting (Not In Jail)</div>
+      <div class="sq-card-rule">Safe square. If visiting: nothing happens. If sent here: you are In Jail. To get out: pay $50 before rolling, use a Get Out of Just Pivoting Free card, or roll doubles (3 attempts). After 3 failed attempts, pay $50 and move. You may still collect rent while Just Pivoting.</div>
+      <div class="sq-card-flavor">"You're not stuck. You're exploring strategic adjacencies. The board looks different from here. That's not a bad thing."</div>
+    </div>
+    <div class="sq-card">
+      <div class="sq-card-em">🧠</div>
+      <div class="sq-card-type">Corner · Position 20</div>
+      <div class="sq-card-name">Deep In Context Window</div>
+      <div class="sq-card-rule">Free Parking. Nothing happens. Official Monopoly rules: no money is collected here. This is one of the few places in the game where nothing costs you anything. Enjoy it.</div>
+      <div class="sq-card-flavor">"You've scrolled back 128,000 tokens of conversation history looking for the thing you said. It is not there. It never was. The context window is not infinite. Nothing is."</div>
+    </div>
+    <div class="sq-card">
+      <div class="sq-card-em">🚔</div>
+      <div class="sq-card-type">Corner · Position 30</div>
+      <div class="sq-card-name">Go To EU Regulation</div>
+      <div class="sq-card-rule">Go directly to Just Pivoting. Do not pass GO. Do not collect $200. Do not collect data. Move your token to position 10 and follow the Just Pivoting (In Jail) rules.</div>
+      <div class="sq-card-flavor">"The GDPR compliance email has been in your drafts for 4 months. The AI Act has 3 annexes. You have read none of them. The regulator has read all of them."</div>
+    </div>
+    <div class="sq-card">
+      <div class="sq-card-em">🧾</div>
+      <div class="sq-card-type">Tax · Position 04</div>
+      <div class="sq-card-name">The Accountant You Finally Hired</div>
+      <div class="sq-card-rule">Pay $200 OR 10% of your total assets (cash + half of property values + half of building values), whichever is less. Player's choice. Calculate honestly.</div>
+      <div class="sq-card-flavor">"She found 3 things wrong immediately. You are grateful and terrified simultaneously. Both feelings are appropriate."</div>
+    </div>
+    <div class="sq-card">
+      <div class="sq-card-em">💅</div>
+      <div class="sq-card-type">Tax · Position 38</div>
+      <div class="sq-card-name">Notion Pro Upgrade</div>
+      <div class="sq-card-rule">Pay $75 to the bank. Flat. No calculation. It's just gone. Like the Luxury Tax, this is for people who are doing well enough that $75 is an annoyance, not a crisis. It becomes a crisis anyway.</div>
+      <div class="sq-card-flavor">"You upgraded for the AI features. You use it for to-do lists. The to-do lists are not done. They were never done. Notion did not cause this."</div>
+    </div>
+  </div>
+</div>
+
+<!-- BUILDING -->
+<div class="sec" id="building">
+  <div class="sec-n">Section 09</div>
+  <div class="sec-title">Building — Engineers & GPU Clusters</div>
+  <p class="prose">In standard Monopoly: houses and hotels. In Ambient Capital: <strong>Engineers</strong> (houses, max 4 per property) and <strong>GPU Clusters</strong> (hotels, replaces 4 Engineers). Rules are identical to official Monopoly.</p>
+
+  <ul class="rule-list">
+    <li><span class="rule-n">1</span>You must own <strong>all properties in a color group</strong> before you can build anything on any of them.</li>
+    <li><span class="rule-n">2</span>You must build <strong>evenly</strong> across a color group. No single property may have 2 or more Engineers than any other property in the same group. You must add one Engineer to each property before adding a second to any.</li>
+    <li><span class="rule-n">3</span>Engineers and GPU Clusters are purchased from <strong>the bank only</strong> — not from other players.</li>
+    <li><span class="rule-n">4</span>The bank has a limited supply: <strong>32 Engineers and 12 GPU Clusters</strong>. If the bank runs out, you must wait until another player sells one back before you can build.</li>
+    <li><span class="rule-n">5</span>A GPU Cluster replaces all 4 Engineers on a property. The 4 Engineers return to the bank when the GPU Cluster is placed.</li>
+    <li><span class="rule-n">6</span>You may build on your turn only, either before or after rolling the dice.</li>
+    <li><span class="rule-n">7</span>You may also build between turns (during another player's turn) as an official rule — unless playing with a house rule against it. Agree before game starts.</li>
+    <li><span class="rule-n">8</span><strong>Selling Engineers:</strong> sold back to the bank at half the purchase price. Must sell evenly (cannot leave one property with 2+ more than another).</li>
+    <li><span class="rule-n">9</span><strong>Selling GPU Clusters:</strong> sell back as a GPU Cluster at half the GPU Cluster price. You do NOT receive 4 Engineers in return. If you want Engineers back, sell the GPU Cluster and buy Engineers separately — only possible if the bank has Engineers available.</li>
+    <li><span class="rule-n">10</span><strong>You cannot build on any property in a group if any property in that group is currently mortgaged.</strong> Unmortgage first, then build.</li>
+  </ul>
+
+  <table class="ref-table">
+    <thead><tr><th>Color Group</th><th>Engineer Cost</th><th>GPU Cluster Cost</th></tr></thead>
+    <tbody>
+      <tr><td>🟤 Brown</td><td>$50 each</td><td>$250</td></tr>
+      <tr><td>🩵 Light Blue</td><td>$50 each</td><td>$250</td></tr>
+      <tr><td>🩷 Pink</td><td>$100 each</td><td>$500</td></tr>
+      <tr><td>🟠 Orange</td><td>$100 each</td><td>$500</td></tr>
+      <tr><td>🔴 Red</td><td>$150 each</td><td>$750</td></tr>
+      <tr><td>🟡 Yellow</td><td>$150 each</td><td>$750</td></tr>
+      <tr><td>🟢 Green</td><td>$200 each</td><td>$1,000</td></tr>
+      <tr><td>🔵 Dark Blue</td><td>$200 each</td><td>$1,000</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- CARDS -->
+<div class="sec" id="cards">
+  <div class="sec-n">Section 10</div>
+  <div class="sec-title">The Card Decks</div>
+  <p class="prose"><strong>Vibe Cards</strong> replace Community Chest (positions 2, 17, 33). <strong>Pivot Cards</strong> replace Chance (positions 7, 22, 36). Both decks contain 16 cards each with exact Monopoly effects — only the flavour text is different. Shuffle each deck at game start. When a deck is exhausted, reshuffle it.</p>
+
+  <p class="prose" style="margin-top:1.5rem"><strong>Vibe Cards</strong> — draw when landing on positions 2, 17, or 33</p>
+  <div class="cards-grid">
+    <div class="game-card" style="background:#FBEAF0;border-color:#C94070">
+      <div class="card-tag" style="color:#C94070">Vibe Card</div>
+      <div class="card-text">"You went viral on Threads. A brand deal appeared from nowhere. Move to GO, collect $200."</div>
+      <div class="card-effect" style="background:#C94070;color:white">Advance to GO, collect $200</div>
+    </div>
+    <div class="game-card" style="background:#FBEAF0;border-color:#C94070">
+      <div class="card-tag" style="color:#C94070">Vibe Card</div>
+      <div class="card-text">"Your investor wired the money to the wrong account. Somehow it's still yours. Bank error in your favour."</div>
+      <div class="card-effect" style="background:#C94070;color:white">Collect $200</div>
+    </div>
+    <div class="game-card" style="background:#FBEAF0;border-color:#C94070">
+      <div class="card-tag" style="color:#C94070">Vibe Card</div>
+      <div class="card-text">"Your API went down during a live enterprise demo. The status page said 'investigating' for 4 hours. Doctor's fee."</div>
+      <div class="card-effect" style="background:#C94070;color:white">Pay $50</div>
+    </div>
+    <div class="game-card" style="background:#FBEAF0;border-color:#C94070">
+      <div class="card-tag" style="color:#C94070">Vibe Card</div>
+      <div class="card-text">"Your cold email case study got picked up by a newsletter. 14k subscribers. From sale of stock vibes."</div>
+      <div class="card-effect" style="background:#C94070;color:white">Collect $50</div>
+    </div>
+    <div class="game-card" style="background:#FBEAF0;border-color:#C94070">
+      <div class="card-tag" style="color:#C94070">Vibe Card</div>
+      <div class="card-text">"Your accelerator has a lawyer on retainer. You've been asked to keep it quiet. KEEP THIS CARD."</div>
+      <div class="card-effect" style="background:#C94070;color:white">Get Out of Just Pivoting Free</div>
+    </div>
+    <div class="game-card" style="background:#FBEAF0;border-color:#C94070">
+      <div class="card-tag" style="color:#C94070">Vibe Card</div>
+      <div class="card-text">"You tweeted your hot take at 2am. It was not the right hot take. Go directly to Just Pivoting."</div>
+      <div class="card-effect" style="background:#C94070;color:white">Go to Just Pivoting</div>
+    </div>
+    <div class="game-card" style="background:#FBEAF0;border-color:#C94070">
+      <div class="card-tag" style="color:#C94070">Vibe Card</div>
+      <div class="card-text">"You gave a talk. It was the best talk anyone had given at that conference. Everyone agreed. They told you directly. Collect from each player."</div>
+      <div class="card-effect" style="background:#C94070;color:white">Collect $50 from each player</div>
+    </div>
+    <div class="game-card" style="background:#FBEAF0;border-color:#C94070">
+      <div class="card-tag" style="color:#C94070">Vibe Card</div>
+      <div class="card-text">"Your runway extension closed. Holiday fund energy. The wires cleared on a Friday. You celebrated."</div>
+      <div class="card-effect" style="background:#C94070;color:white">Collect $100</div>
+    </div>
+    <div class="game-card" style="background:#FBEAF0;border-color:#C94070">
+      <div class="card-tag" style="color:#C94070">Vibe Card</div>
+      <div class="card-text">"A VC replied to your tweet. It was just a like. Then they replied. Income tax refund energy."</div>
+      <div class="card-effect" style="background:#C94070;color:white">Collect $20</div>
+    </div>
+    <div class="game-card" style="background:#FBEAF0;border-color:#C94070">
+      <div class="card-tag" style="color:#C94070">Vibe Card</div>
+      <div class="card-text">"It's your company's birthday. One year. Everyone on the cap table sent a message. Collect from each player."</div>
+      <div class="card-effect" style="background:#C94070;color:white">Collect $10 from each player</div>
+    </div>
+    <div class="game-card" style="background:#FBEAF0;border-color:#C94070">
+      <div class="card-tag" style="color:#C94070">Vibe Card</div>
+      <div class="card-text">"Your SAFE converted. Life insurance matures energy. The cap table updated. It felt real for a moment."</div>
+      <div class="card-effect" style="background:#C94070;color:white">Collect $100</div>
+    </div>
+    <div class="game-card" style="background:#FBEAF0;border-color:#C94070">
+      <div class="card-tag" style="color:#C94070">Vibe Card</div>
+      <div class="card-text">"You ignored your health for 8 months. Skipped every gym session. Your body sent an invoice. Pay hospital fees."</div>
+      <div class="card-effect" style="background:#C94070;color:white">Pay $100</div>
+    </div>
+    <div class="game-card" style="background:#FBEAF0;border-color:#C94070">
+      <div class="card-tag" style="color:#C94070">Vibe Card</div>
+      <div class="card-text">"Your legal fees came due. The incorporation, the IP assignment, the co-founder agreement nobody signed until now. Pay school fees."</div>
+      <div class="card-effect" style="background:#C94070;color:white">Pay $150</div>
+    </div>
+    <div class="game-card" style="background:#FBEAF0;border-color:#C94070">
+      <div class="card-tag" style="color:#C94070">Vibe Card</div>
+      <div class="card-text">"You gave a 25-minute advisory session to a founder at a conference. They got a lot from it. Receive consultancy fee."</div>
+      <div class="card-effect" style="background:#C94070;color:white">Collect $25</div>
+    </div>
+    <div class="game-card" style="background:#FBEAF0;border-color:#C94070">
+      <div class="card-tag" style="color:#C94070">Vibe Card</div>
+      <div class="card-text">"Your cloud costs scaled with your users. Congratulations on growth. Pay for street repairs: $40 per Engineer, $115 per GPU Cluster you own."</div>
+      <div class="card-effect" style="background:#C94070;color:white">Pay $40/Engineer · $115/GPU Cluster</div>
+    </div>
+    <div class="game-card" style="background:#FBEAF0;border-color:#C94070">
+      <div class="card-tag" style="color:#C94070">Vibe Card</div>
+      <div class="card-text">"You won a startup competition. Not the main prize. Second place. The trophy is a small trophy. Collect $10."</div>
+      <div class="card-effect" style="background:#C94070;color:white">Collect $10</div>
+    </div>
+  </div>
+
+  <p class="prose" style="margin-top:2rem"><strong>Pivot Cards</strong> — draw when landing on positions 7, 22, or 36</p>
+  <div class="cards-grid">
+    <div class="game-card" style="background:#E8F5DC;border-color:#3A7A28">
+      <div class="card-tag" style="color:#3A7A28">Pivot Card</div>
+      <div class="card-text">"You met the right person at the wrong conference. They introduced you to someone. Advance to Thine HQ."</div>
+      <div class="card-effect" style="background:#3A7A28;color:white">Advance to Thine HQ (pos 39)</div>
+    </div>
+    <div class="game-card" style="background:#E8F5DC;border-color:#3A7A28">
+      <div class="card-tag" style="color:#3A7A28">Pivot Card</div>
+      <div class="card-text">"YC application deadline extended. You submitted. They liked it. Advance to GO, collect $200."</div>
+      <div class="card-effect" style="background:#3A7A28;color:white">Advance to GO, collect $200</div>
+    </div>
+    <div class="game-card" style="background:#E8F5DC;border-color:#3A7A28">
+      <div class="card-tag" style="color:#3A7A28">Pivot Card</div>
+      <div class="card-text">"TechCrunch wrote about your space. Not you specifically. Still. Advance to The LinkedIn Post That Hit."</div>
+      <div class="card-effect" style="background:#3A7A28;color:white">Advance to pos 24 (Red)</div>
+    </div>
+    <div class="game-card" style="background:#E8F5DC;border-color:#3A7A28">
+      <div class="card-tag" style="color:#3A7A28">Pivot Card</div>
+      <div class="card-text">"You decided to 'get out of the building' and talk to users. The building is a WeWork. Advance to Sightglass Coffee."</div>
+      <div class="card-effect" style="background:#3A7A28;color:white">Advance to pos 11 (Pink)</div>
+    </div>
+    <div class="game-card" style="background:#E8F5DC;border-color:#3A7A28">
+      <div class="card-tag" style="color:#3A7A28">Pivot Card</div>
+      <div class="card-text">"Your co-founder said 'we need to move faster.' Advance to nearest Railroad. Pay double rent if owned."</div>
+      <div class="card-effect" style="background:#3A7A28;color:white">Advance to nearest Railroad (double rent if owned)</div>
+    </div>
+    <div class="game-card" style="background:#E8F5DC;border-color:#3A7A28">
+      <div class="card-tag" style="color:#3A7A28">Pivot Card</div>
+      <div class="card-text">"A competitor launched. Worse UX. More funding. You need to move. Advance to nearest Railroad. Double rent if owned."</div>
+      <div class="card-effect" style="background:#3A7A28;color:white">Advance to nearest Railroad (double rent if owned)</div>
+    </div>
+    <div class="game-card" style="background:#E8F5DC;border-color:#3A7A28">
+      <div class="card-tag" style="color:#3A7A28">Pivot Card</div>
+      <div class="card-text">"Your infrastructure is held together with duct tape and prayers. Advance to nearest Utility. 10× dice if owned."</div>
+      <div class="card-effect" style="background:#3A7A28;color:white">Advance to nearest Utility (10× dice if owned)</div>
+    </div>
+    <div class="game-card" style="background:#E8F5DC;border-color:#3A7A28">
+      <div class="card-tag" style="color:#3A7A28">Pivot Card</div>
+      <div class="card-text">"You sent a Slack message to the wrong channel. It was the investor channel. It was not a good message. Go back 3 spaces."</div>
+      <div class="card-effect" style="background:#3A7A28;color:white">Go back 3 spaces</div>
+    </div>
+    <div class="game-card" style="background:#E8F5DC;border-color:#3A7A28">
+      <div class="card-tag" style="color:#3A7A28">Pivot Card</div>
+      <div class="card-text">"You gave an interview that required a follow-up statement. The follow-up required a follow-up. Go to Just Pivoting."</div>
+      <div class="card-effect" style="background:#3A7A28;color:white">Go to Just Pivoting</div>
+    </div>
+    <div class="game-card" style="background:#E8F5DC;border-color:#3A7A28">
+      <div class="card-tag" style="color:#3A7A28">Pivot Card</div>
+      <div class="card-text">"Your domain expired. You didn't notice for 3 days. A squatter almost got it. Pay poor tax."</div>
+      <div class="card-effect" style="background:#3A7A28;color:white">Pay $15</div>
+    </div>
+    <div class="game-card" style="background:#E8F5DC;border-color:#3A7A28">
+      <div class="card-tag" style="color:#3A7A28">Pivot Card</div>
+      <div class="card-text">"You posted your MRR publicly. Founders love transparency. The right founder saw it and told two VCs. Collect $50."</div>
+      <div class="card-effect" style="background:#3A7A28;color:white">Collect $50 (bank pays dividend)</div>
+    </div>
+    <div class="game-card" style="background:#E8F5DC;border-color:#3A7A28">
+      <div class="card-tag" style="color:#3A7A28">Pivot Card</div>
+      <div class="card-text">"Your lead investor has a call with the regulator. You don't know what was said. KEEP THIS CARD."</div>
+      <div class="card-effect" style="background:#3A7A28;color:white">Get Out of Just Pivoting Free</div>
+    </div>
+    <div class="game-card" style="background:#E8F5DC;border-color:#3A7A28">
+      <div class="card-tag" style="color:#3A7A28">Pivot Card</div>
+      <div class="card-text">"Your engineers asked for equity refreshes. This is fair. Pay for general repairs: $25 per Engineer, $100 per GPU Cluster."</div>
+      <div class="card-effect" style="background:#3A7A28;color:white">Pay $25/Engineer · $100/GPU Cluster</div>
+    </div>
+    <div class="game-card" style="background:#E8F5DC;border-color:#3A7A28">
+      <div class="card-tag" style="color:#3A7A28">Pivot Card</div>
+      <div class="card-text">"Take a trip to The YC Batch — the first railroad. If owned by another player, pay double rent."</div>
+      <div class="card-effect" style="background:#3A7A28;color:white">Advance to YC Batch (pos 5) — double rent if owned</div>
+    </div>
+    <div class="game-card" style="background:#E8F5DC;border-color:#3A7A28">
+      <div class="card-tag" style="color:#3A7A28">Pivot Card</div>
+      <div class="card-text">"You have been elected chairman of the AI Safety board. Congratulations. Pay $50 to each other player."</div>
+      <div class="card-effect" style="background:#3A7A28;color:white">Pay $50 to each player</div>
+    </div>
+    <div class="game-card" style="background:#E8F5DC;border-color:#3A7A28">
+      <div class="card-tag" style="color:#3A7A28">Pivot Card</div>
+      <div class="card-text">"Your convertible note matured. The round closed. The building and loan came through. Collect $150."</div>
+      <div class="card-effect" style="background:#3A7A28;color:white">Collect $150</div>
+    </div>
+  </div>
+</div>
+
+<!-- FULL RULES -->
+<div class="sec" id="fullrules">
+  <div class="sec-n">Section 11</div>
+  <div class="sec-title">Full Rules</div>
+
+  <p class="prose" style="margin-bottom:1.5rem"><strong>Setup</strong></p>
+  <ul class="rule-list">
+    <li><span class="rule-n">1</span>Each player chooses a token and places it on GO.</li>
+    <li><span class="rule-n">2</span>One player acts as Banker. The Banker manages all property transactions and card distributions. The Banker may also play.</li>
+    <li><span class="rule-n">3</span>Each player receives $1,500: 2×$500, 4×$100, 1×$50, 1×$20, 2×$10, 1×$5, 5×$1.</li>
+    <li><span class="rule-n">4</span>Shuffle both card decks separately and place face-down on the board.</li>
+    <li><span class="rule-n">5</span>Each player rolls both dice. Highest total goes first. Play proceeds clockwise.</li>
+  </ul>
+
+  <p class="prose" style="margin-bottom:1.5rem;margin-top:2rem"><strong>On Your Turn</strong></p>
+  <ul class="rule-list">
+    <li><span class="rule-n">1</span>Roll both dice and move your token clockwise the number of spaces shown.</li>
+    <li><span class="rule-n">2</span>If you roll doubles, take your turn as normal, then roll again for another turn. Roll doubles three times in a row: go directly to Just Pivoting.</li>
+    <li><span class="rule-n">3</span>Resolve whatever square you land on (see below).</li>
+    <li><span class="rule-n">4</span>Before or after rolling (not during), you may buy/sell buildings, mortgage properties, or trade with other players.</li>
+    <li><span class="rule-n">5</span>Pass the dice left when your turn is complete.</li>
+  </ul>
+
+  <p class="prose" style="margin-bottom:1.5rem;margin-top:2rem"><strong>Landing on Squares</strong></p>
+  <ul class="rule-list">
+    <li><span class="rule-n">→</span><strong>Unowned property:</strong> buy it at the listed price, or pass. If you pass, the property goes to immediate auction — all players including you may bid. Minimum bid: $1. Highest bidder wins.</li>
+    <li><span class="rule-n">→</span><strong>Owned property (someone else's):</strong> pay the listed rent. If the owner has a color group but no buildings, rent is doubled. With buildings, pay the listed building rent.</li>
+    <li><span class="rule-n">→</span><strong>Owned property (yours):</strong> nothing happens.</li>
+    <li><span class="rule-n">→</span><strong>Mortgaged property:</strong> no rent is owed, even if owned by another player.</li>
+    <li><span class="rule-n">→</span><strong>Railroad (someone else's):</strong> pay $25/$50/$100/$200 based on how many railroads they own. Double if you were sent there by a Pivot Card.</li>
+    <li><span class="rule-n">→</span><strong>Utility (someone else's):</strong> pay 4× your dice roll (own 1) or 10× your dice roll (own both). Use the same dice roll that moved you there. If sent by Pivot Card, re-roll to calculate rent.</li>
+    <li><span class="rule-n">→</span><strong>Vibe Card:</strong> draw top card, follow instructions, return card to bottom of deck (except Get Out of Just Pivoting Free — keep that).</li>
+    <li><span class="rule-n">→</span><strong>Pivot Card:</strong> draw top card, follow instructions, return to bottom (except Get Out of Just Pivoting Free).</li>
+    <li><span class="rule-n">→</span><strong>GO:</strong> collect $200.</li>
+    <li><span class="rule-n">→</span><strong>The Accountant (Tax):</strong> pay $200 OR 10% of total assets — your choice. Total assets = cash + half price of all properties you own (unmortgaged) + half price of mortgaged properties + current cost of all buildings.</li>
+    <li><span class="rule-n">→</span><strong>Notion Pro Upgrade (Tax):</strong> pay $75.</li>
+    <li><span class="rule-n">→</span><strong>Just Pivoting (visiting):</strong> nothing happens.</li>
+    <li><span class="rule-n">→</span><strong>Deep In Context Window:</strong> nothing happens.</li>
+    <li><span class="rule-n">→</span><strong>Go To EU Regulation:</strong> move to Just Pivoting. You are In Jail. Do not collect $200.</li>
+  </ul>
+
+  <p class="prose" style="margin-bottom:1.5rem;margin-top:2rem"><strong>Just Pivoting (Jail) — Full Rules</strong></p>
+  <ul class="rule-list">
+    <li><span class="rule-n">1</span>You go to Just Pivoting by: landing on "Go To EU Regulation" (pos 30), drawing a Go To Jail card, or rolling doubles three times in a row.</li>
+    <li><span class="rule-n">2</span>Move directly to Just Pivoting. Do not pass GO. Do not collect $200.</li>
+    <li><span class="rule-n">3</span>While in Just Pivoting, you may still collect rent from properties you own.</li>
+    <li><span class="rule-n">4</span>To get out: pay $50 before you roll (and then roll and move normally); OR use a Get Out of Just Pivoting Free card before rolling; OR roll doubles on your turn (move the number shown, do not roll again).</li>
+    <li><span class="rule-n">5</span>If you fail to roll doubles on 3 consecutive turns, on the third turn you must pay $50 and move the number shown.</li>
+    <li><span class="rule-n">6</span>In late-game scenarios, it may be strategically beneficial to stay in Just Pivoting to avoid landing on developed properties. You may choose to pay $50 before rolling on any turn — you are not required to try for doubles.</li>
+  </ul>
+
+  <p class="prose" style="margin-bottom:1.5rem;margin-top:2rem"><strong>Mortgaging</strong></p>
+  <ul class="rule-list">
+    <li><span class="rule-n">1</span>You may mortgage a property at any time to raise cash. The mortgage value is half the purchase price. Collect this from the bank.</li>
+    <li><span class="rule-n">2</span>A mortgaged property collects no rent. It is flipped face-down on the board.</li>
+    <li><span class="rule-n">3</span>To unmortgage: pay the bank the mortgage value plus 10% interest.</li>
+    <li><span class="rule-n">4</span>You cannot build on any property in a color group if any property in that group is mortgaged.</li>
+    <li><span class="rule-n">5</span>If a mortgaged property is sold or traded to another player: the new owner must immediately pay 10% of the mortgage value to the bank. They may then either unmortgage immediately (paying the remaining mortgage + 10%) or leave it mortgaged.</li>
+    <li><span class="rule-n">6</span>All buildings must be sold before a property can be mortgaged. Buildings sell at half price to the bank.</li>
+  </ul>
+
+  <p class="prose" style="margin-bottom:1.5rem;margin-top:2rem"><strong>Trading</strong></p>
+  <ul class="rule-list">
+    <li><span class="rule-n">1</span>Players may trade properties, cash, and Get Out of Just Pivoting Free cards with each other at any time during their turn.</li>
+    <li><span class="rule-n">2</span>Buildings cannot be traded. They must be sold to the bank first (at half price), then the property can be traded.</li>
+    <li><span class="rule-n">3</span>All trades are binding once agreed. No takebacks.</li>
+    <li><span class="rule-n">4</span>You may not trade future rent immunity (official rules). You may trade anything else, including cash loans — though the game enforces no repayment rules, so lend at your own risk.</li>
+  </ul>
+
+  <p class="prose" style="margin-bottom:1.5rem;margin-top:2rem"><strong>Bankruptcy</strong></p>
+  <ul class="rule-list">
+    <li><span class="rule-n">1</span>You are bankrupt when you cannot pay a debt and have no assets left to sell or mortgage.</li>
+    <li><span class="rule-n">2</span>If you owe the bank: all your assets return to the bank. Properties are placed back on the board unimproved (the bank removes all buildings). The bank auctions these properties when other players land on them.</li>
+    <li><span class="rule-n">3</span>If you owe another player: all your assets (including properties with buildings, cash, and GOOJF cards) transfer directly to that player. The receiving player does not need to sell the buildings immediately.</li>
+    <li><span class="rule-n">4</span>You are eliminated from the game. Remove your token.</li>
+  </ul>
+
+  <p class="prose" style="margin-bottom:1.5rem;margin-top:2rem"><strong>Winning</strong></p>
+  <ul class="rule-list">
+    <li><span class="rule-n">1</span>The last player remaining who has not gone bankrupt wins.</li>
+    <li><span class="rule-n">2</span>They are declared the <strong>Last Founder Standing</strong>.</li>
+    <li><span class="rule-n">3</span>They are legally entitled to post about it on LinkedIn with the caption: "Grateful and humbled. This journey taught me more than any MBA could."</li>
+  </ul>
+</div>
+
+<!-- QUICK REF -->
+<div class="sec" id="quickref">
+  <div class="sec-n">Section 12</div>
+  <div class="sec-title">Quick Reference</div>
+
+  <div class="qr-grid">
+    <div class="qr-card">
+      <div class="qr-title">On Your Turn</div>
+      <ul class="qr-list">
+        <li>Roll dice, move token</li>
+        <li>Doubles = roll again (3× = go to jail)</li>
+        <li>Resolve your square</li>
+        <li>Optionally buy/sell/build/trade</li>
+        <li>Pass dice left</li>
+      </ul>
+    </div>
+    <div class="qr-card">
+      <div class="qr-title">Landing on Property</div>
+      <ul class="qr-list">
+        <li>Unowned → buy or auction</li>
+        <li>Yours → nothing (smile)</li>
+        <li>Theirs → pay rent</li>
+        <li>Mortgaged → no rent owed</li>
+        <li>Full set, no buildings → 2× base rent</li>
+      </ul>
+    </div>
+    <div class="qr-card">
+      <div class="qr-title">Building Rules</div>
+      <ul class="qr-list">
+        <li>Own full color group first</li>
+        <li>Build evenly across group</li>
+        <li>4 Engineers before GPU Cluster</li>
+        <li>32 Engineers / 12 GPUs in bank</li>
+        <li>No building if any prop mortgaged</li>
+      </ul>
+    </div>
+    <div class="qr-card">
+      <div class="qr-title">Getting Out of Just Pivoting</div>
+      <ul class="qr-list">
+        <li>Pay $50 before rolling</li>
+        <li>Use GOOJP Free card</li>
+        <li>Roll doubles (3 tries max)</li>
+        <li>Turn 3: must pay $50 and move</li>
+        <li>Can still collect rent while in</li>
+      </ul>
+    </div>
+    <div class="qr-card">
+      <div class="qr-title">Railroad Rent</div>
+      <ul class="qr-list">
+        <li>Own 1: $25</li>
+        <li>Own 2: $50</li>
+        <li>Own 3: $100</li>
+        <li>Own 4: $200</li>
+        <li>Via Pivot Card: double all of above</li>
+      </ul>
+    </div>
+    <div class="qr-card">
+      <div class="qr-title">Utility Rent</div>
+      <ul class="qr-list">
+        <li>Own 1: 4× dice roll</li>
+        <li>Own both: 10× dice roll</li>
+        <li>Use the roll that landed you there</li>
+        <li>Via Pivot Card: re-roll to calculate</li>
+        <li>Cost: $150 each, mortgage: $75</li>
+      </ul>
+    </div>
+    <div class="qr-card">
+      <div class="qr-title">Mortgage</div>
+      <ul class="qr-list">
+        <li>Value = half purchase price</li>
+        <li>No rent on mortgaged property</li>
+        <li>Unmortgage = mortgage value + 10%</li>
+        <li>Sell buildings first (half price)</li>
+        <li>Trading: new owner pays 10% instantly</li>
+      </ul>
+    </div>
+    <div class="qr-card">
+      <div class="qr-title">Taxes</div>
+      <ul class="qr-list">
+        <li>Pos 4: $200 OR 10% of assets</li>
+        <li>Pos 38: $75 flat</li>
+        <li>Assets = cash + half property values + half building values</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div><!-- end content -->
+
+<div class="footer">
+  <div class="footer-title">AMBIENT CAPITAL</div>
+  <div class="footer-sub">First & Only Edition · Rules Verified Against Official Monopoly</div>
+  <div class="footer-note">All property prices, rents, building costs, railroad rents, utility formulas, card effects, tax amounts, and rules are taken directly from standard Monopoly with zero modifications. The names are different. The math is identical. The trauma is the same.<br><br>Thine HQ is at position 39. That's Boardwalk. That's intentional. Visit <strong>thine.com</strong>.</div>
+</div>
+
+</body>
+</html>
