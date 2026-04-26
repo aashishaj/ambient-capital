@@ -293,6 +293,1406 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<script src="game.js"></script>
+<script>
+// ════════════════════════════════════════════════════════════
+// BOARD DATA — exact Monopoly positions & values
+// ════════════════════════════════════════════════════════════
+const BOARD = [
+  // 0-9: bottom row right→left
+  {t:'corner', name:'GO', emoji:'🚀', sub:'Collect $200 pre-seed'},
+  {t:'prop', name:'Latent Space Lofts', grp:'Brown', col:'#8B5E3C', price:60, rent:[2,10,30,90,160,250], build:50, mort:30,
+   flavor:"Nothing here is real but the vibes are immaculate. Cheapest property on the board. Everyone dismisses it. Fatal mistake."},
+  {t:'vibe', name:'Vibe Card', emoji:'🃏'},
+  {t:'prop', name:"Sam Altman's Napkin", grp:'Brown', col:'#8B5E3C', price:60, rent:[4,20,60,180,320,450], build:50, mort:30,
+   flavor:"The original idea. Bad handwriting. Now worth $157B. The napkin is in a climate-controlled vault."},
+  {t:'tax', name:'The Accountant You Finally Hired', emoji:'🧾', amt:200, pct:true,
+   flavor:"She found 3 things wrong immediately. You are grateful and terrified simultaneously."},
+  {t:'rail', name:'The YC Batch', emoji:'🚂', price:200, mort:100,
+   flavor:"You're in. 7% for $500k. The group chat has 89 unread messages already."},
+  {t:'prop', name:'DeepMind Lab', grp:'LightBlue', col:'#4B8EC4', price:100, rent:[6,30,90,270,400,550], build:50, mort:50,
+   flavor:"Technically doing groundbreaking research. Technically hasn't shipped in 3 years. Both things are true."},
+  {t:'pivot', name:'Pivot Card', emoji:'🃏'},
+  {t:'prop', name:'AGI Research Park', grp:'LightBlue', col:'#4B8EC4', price:100, rent:[6,30,90,270,400,550], build:50, mort:50,
+   flavor:"Everyone has a PhD. Strong opinions about your roadmap. None of them have talked to a customer. Ever."},
+  {t:'prop', name:'The YC Interview Room', grp:'LightBlue', col:'#4B8EC4', price:120, rent:[8,40,100,300,450,600], build:50, mort:60,
+   flavor:"Rejected 3 times. Going back. The form asks the exact same questions. You answer differently anyway."},
+  // 10-19: left col bottom→top
+  {t:'corner', name:'Just Pivoting', emoji:'⛓️', sub:'Not in jail (probably)', jail:true},
+  {t:'prop', name:'Sightglass Coffee', grp:'Pink', col:'#C94070', price:140, rent:[10,50,150,450,625,750], build:100, mort:70,
+   flavor:"Laptop-to-person ratio: 2.4:1. Wifi: 'disruption2023'. Nobody talking. Everyone building something."},
+  {t:'util', name:'The GPU Cluster', emoji:'⚡', price:150, mort:75,
+   flavor:"You need it. Nvidia has it. Jensen Huang is wearing his leather jacket. The waitlist is 8 months long."},
+  {t:'prop', name:'The Tartine Queue', grp:'Pink', col:'#C94070', price:140, rent:[10,50,150,450,625,750], build:100, mort:70,
+   flavor:"45 minute wait for $24 toast. You did your best thinking here. You cannot explain why. Nobody can."},
+  {t:'prop', name:'Your WeWork Hot Desk', grp:'Pink', col:'#C94070', price:160, rent:[12,60,180,500,700,900], build:100, mort:80,
+   flavor:"$800/month. You've convinced yourself the networking justifies it. It does not. You are still here."},
+  {t:'rail', name:'The SF→NYC Red-Eye', emoji:'✈️', price:200, mort:100,
+   flavor:"Every serious founder has done this flight. You wrote great code at 2am at 35,000 feet. You were delirious."},
+  {t:'prop', name:'The Pitch That Almost Worked', grp:'Orange', col:'#C47020', price:180, rent:[14,70,200,550,750,950], build:100, mort:90,
+   flavor:"They said they 'loved the space.' That was 6 weeks ago. The calendar invite expired. Radio silence."},
+  {t:'vibe', name:'Vibe Card', emoji:'🃏'},
+  {t:'prop', name:'The Partner Meeting', grp:'Orange', col:'#C47020', price:180, rent:[14,70,200,550,750,950], build:100, mort:90,
+   flavor:"Statistically rare to get here. They passed. Feedback was 'too early.' It is always too early."},
+  {t:'prop', name:'Sand Hill Road, 9am Monday', grp:'Orange', col:'#C47020', price:200, rent:[16,80,220,600,800,1000], build:100, mort:100,
+   flavor:"You drove up. You drove back down. The check is coming. It has been 6 weeks. The check is not coming."},
+  // 20-29: top row left→right
+  {t:'corner', name:'Deep In Context Window', emoji:'🧠', sub:'Free parking. Nothing happens.'},
+  {t:'prop', name:'The TechCrunch Article', grp:'Red', col:'#C73535', price:220, rent:[18,90,250,700,875,1050], build:150, mort:110,
+   flavor:"They got your company name wrong. The SEO is still good. You put it in your LinkedIn bio anyway."},
+  {t:'pivot', name:'Pivot Card', emoji:'🃏'},
+  {t:'prop', name:'The Demo Day Stage', grp:'Red', col:'#C73535', price:220, rent:[18,90,250,700,875,1050], build:150, mort:110,
+   flavor:"2 minutes. 300 people. Typo on slide 3. You raised anyway. The typo is now a 'signature detail.'"},
+  {t:'prop', name:'The LinkedIn Post That Hit', grp:'Red', col:'#C73535', price:240, rent:[20,100,300,750,925,1100], build:150, mort:120,
+   flavor:"You wrote about failure. 200k impressions. You've never felt more seen or more embarrassed simultaneously."},
+  {t:'rail', name:'Caltrain', emoji:'🚆', price:200, mort:100,
+   flavor:"Delayed 40 minutes. You updated your Notion. Made a to-do list about the to-do list. Missed the meeting."},
+  {t:'prop', name:"Lex Fridman's Podcast", grp:'Yellow', col:'#B8920A', price:260, rent:[22,110,330,800,975,1150], build:150, mort:130,
+   flavor:"3 hours. 40 mins about your startup. 2hrs 20mins about consciousness and mortality. Lex nods. It goes viral without context."},
+  {t:'prop', name:'The All-In Pod Mention', grp:'Yellow', col:'#B8920A', price:260, rent:[22,110,330,800,975,1150], build:150, mort:130,
+   flavor:"Chamath said your space is 'interesting.' 4,000 followed you in 48 hours. 3,998 never opened the app."},
+  {t:'util', name:'AWS Credits', emoji:'💧', price:150, mort:75,
+   flavor:"You got $100k in credits at Demo Day. Burned through in 3 months. The invoice arrived on a Friday."},
+  {t:'prop', name:'The a16z Footnote', grp:'Yellow', col:'#B8920A', price:280, rent:[24,120,360,850,1025,1200], build:150, mort:140,
+   flavor:"You are in footnote 7. It is still in your pitch deck. It will always be in your pitch deck."},
+  // 30-39: right col top→bottom
+  {t:'corner', name:'Go To EU Regulation', emoji:'🚔', sub:'Go directly to Just Pivoting', goToJail:true},
+  {t:'prop', name:'Sequoia Sand Hill Rd', grp:'Green', col:'#3A7A28', price:300, rent:[26,130,390,900,1100,1275], build:200, mort:150,
+   flavor:"10 slides maximum. Bring 11 and a partner will explain what Airbnb did in 2009 for 20 minutes."},
+  {t:'prop', name:"Andreessen's Blog Post", grp:'Green', col:'#3A7A28', price:300, rent:[26,130,390,900,1100,1275], build:200, mort:150,
+   flavor:"8,000 words. Accurate. Vaguely threatening. Comes with a retweet from Marc. You framed the retweet."},
+  {t:'vibe', name:'Vibe Card', emoji:'🃏'},
+  {t:'prop', name:'The Series A Term Sheet', grp:'Green', col:'#3A7A28', price:320, rent:[28,150,450,1000,1200,1400], build:200, mort:160,
+   flavor:"It's real. Co-investors are 'coming together.' Closing 'in a few weeks.' That was 9 weeks ago."},
+  {t:'rail', name:"Paul Graham's Yacht", emoji:'🛳️', price:200, mort:100,
+   flavor:"He said 5 words to you. You are still unpacking them. Your essay about it has 80,000 views."},
+  {t:'pivot', name:'Pivot Card', emoji:'🃏'},
+  {t:'prop', name:'OpenAI HQ', grp:'DarkBlue', col:'#1A3A8A', price:350, rent:[35,175,500,1100,1300,1500], build:200, mort:175,
+   flavor:"Raised $157B. Lost $5B last year. Currently 'on track.' Mission: saving humanity. From what: TBD."},
+  {t:'tax', name:'Notion Pro Upgrade', emoji:'💅', amt:75,
+   flavor:"You upgraded for the AI features. You use it for to-do lists. The lists are not done. They were never done."},
+  {t:'prop', name:'Thine HQ', grp:'DarkBlue', col:'#1A3A8A', price:400, rent:[50,200,600,1400,1700,2000], build:200, mort:200, thine:true,
+   flavor:"Ambient AI that actually remembers you. While everyone built chatbots, Thine built a second brain. This is Boardwalk. You know what that means."},
+];
+
+// Group definitions
+const GROUPS = {
+  Brown:    {color:'#8B5E3C', bg:'#F5ECD8', members:[1,3],     buildCost:50,  hotelCost:250},
+  LightBlue:{color:'#4B8EC4', bg:'#DCF0FF', members:[6,8,9],   buildCost:50,  hotelCost:250},
+  Pink:     {color:'#C94070', bg:'#FBEAF0', members:[11,13,14], buildCost:100, hotelCost:500},
+  Orange:   {color:'#C47020', bg:'#FFF0DC', members:[16,18,19], buildCost:100, hotelCost:500},
+  Red:      {color:'#C73535', bg:'#FAE8E8', members:[21,23,24], buildCost:150, hotelCost:750},
+  Yellow:   {color:'#B8920A', bg:'#FFFADC', members:[26,27,29], buildCost:150, hotelCost:750},
+  Green:    {color:'#3A7A28', bg:'#E8F5DC', members:[31,32,34], buildCost:200, hotelCost:1000},
+  DarkBlue: {color:'#1A3A8A', bg:'#DCE8FF', members:[37,39],   buildCost:200, hotelCost:1000},
+};
+
+const RAILS = [5,15,25,35];
+const UTILS = [12,28];
+const JAIL_POS = 10;
+const GOTO_JAIL = 30;
+
+// ════════════════════════════════════════════════════════════
+// CARD DECKS
+// ════════════════════════════════════════════════════════════
+const VIBE_DECK = [
+  {txt:"You went viral on Threads. A brand deal appeared. Move to GO, collect $200.", fx:'goto', pos:0, collect:200},
+  {txt:"Your investor wired the money to the wrong account. Somehow it's yours. Bank error in your favour.", fx:'earn', amt:200},
+  {txt:"Your API went down during a live enterprise demo. The status page said 'investigating' for 4 hours. Pay doctor's fee.", fx:'pay', amt:50},
+  {txt:"Your cold email case study got picked up by a 14k-subscriber newsletter. Collect from sale of clout.", fx:'earn', amt:50},
+  {txt:"Your accelerator has a lawyer on retainer. You've been asked to keep it quiet. Keep this card.", fx:'goojf'},
+  {txt:"You tweeted your hot take at 2am. It was not the right hot take. Go directly to Just Pivoting.", fx:'jail'},
+  {txt:"You gave the best talk at the conference. Everyone agrees. They told you directly. Collect from each player.", fx:'collect_each', amt:50},
+  {txt:"Your runway extension closed. The wires cleared on a Friday. You celebrated appropriately.", fx:'earn', amt:100},
+  {txt:"A VC replied to your tweet. It was just a like. Then they actually replied. Collect income tax refund energy.", fx:'earn', amt:20},
+  {txt:"It's your company's anniversary. Everyone on the cap table sent a message. Collect from each player.", fx:'collect_each', amt:10},
+  {txt:"Your SAFE converted. The cap table updated. It felt real for exactly one moment.", fx:'earn', amt:100},
+  {txt:"You ignored your health for 8 months. Your body sent an invoice. Pay hospital fees.", fx:'pay', amt:100},
+  {txt:"Your legal fees came due. The incorporation, IP assignment, co-founder agreement nobody signed until now.", fx:'pay', amt:150},
+  {txt:"You gave a 25-minute advisory session at a conference. They got a lot from it. Receive consultancy fee.", fx:'earn', amt:25},
+  {txt:"Your cloud costs scaled with your user growth. Congratulations. Pay infrastructure repair fees.", fx:'repair', h:40, ho:115},
+  {txt:"You won a startup competition. Second place. The trophy is a small trophy. You put it on your desk.", fx:'earn', amt:10},
+];
+
+const PIVOT_DECK = [
+  {txt:"You met the right person at the wrong conference. They introduced you to someone. Advance to Thine HQ.", fx:'goto', pos:39},
+  {txt:"YC application deadline extended. You submitted in time. They liked it. Advance to GO, collect $200.", fx:'goto', pos:0, collect:200},
+  {txt:"TechCrunch wrote about your space. Not you. Still. Advance to The LinkedIn Post That Hit.", fx:'goto', pos:24},
+  {txt:"You decided to 'get out of the building' and talk to users. The building is a WeWork. Advance to Sightglass Coffee.", fx:'goto', pos:11},
+  {txt:"Your co-founder said 'we need to move faster.' Advance to nearest railroad. Pay double rent if owned.", fx:'nearest_rail', double:true},
+  {txt:"A competitor launched with worse UX and more funding. Advance to nearest railroad. Pay double if owned.", fx:'nearest_rail', double:true},
+  {txt:"Your infrastructure is held together with prayers. Advance to nearest utility. 10× dice if owned.", fx:'nearest_util'},
+  {txt:"You sent a Slack message to the wrong channel. It was the investor channel. It was not a good message. Go back 3 spaces.", fx:'back', spaces:3},
+  {txt:"You gave an interview that required a follow-up statement. The follow-up required a follow-up. Go to Just Pivoting.", fx:'jail'},
+  {txt:"Your domain expired. You didn't notice for 3 days. A squatter almost got it. Pay poor tax.", fx:'pay', amt:15},
+  {txt:"You posted your MRR publicly. Founders love transparency. The right founder saw it and told two VCs. Bank pays dividend.", fx:'earn', amt:50},
+  {txt:"Your lead investor has a call with the regulator. Keep this card.", fx:'goojf'},
+  {txt:"Your engineers asked for equity refreshes. This is fair and correct. Pay for general maintenance.", fx:'repair', h:25, ho:100},
+  {txt:"Take a trip to The YC Batch — the first railroad. Pay double rent if owned by another player.", fx:'goto', pos:5, double:true},
+  {txt:"You have been elected chairman of the AI Safety board. Congratulations. Pay $50 to each other player.", fx:'pay_each', amt:50},
+  {txt:"Your convertible note matured. The round closed. Your building and loan came through. Collect $150.", fx:'earn', amt:150},
+];
+
+// Grid position mapping: sqIdx → {c, r} (1-indexed, 11-col 11-row grid)
+function sqPos(i){
+  if(i===0)  return{c:11,r:11};
+  if(i<=9)   return{c:11-i,r:11};
+  if(i===10) return{c:1,r:11};
+  if(i<=19)  return{c:1,r:11-(i-10)};
+  if(i===20) return{c:1,r:1};
+  if(i<=29)  return{c:1+(i-20),r:1};
+  if(i===30) return{c:11,r:1};
+  if(i<=39)  return{c:11,r:1+(i-30)};
+}
+
+// ════════════════════════════════════════════════════════════
+// GAME STATE
+// ════════════════════════════════════════════════════════════
+const TEMS   = ['🧠','💸','🔮','🚀','💻','🎯'];
+const TCOLS  = ['#1D9E75','#D4537E','#7F77DD','#BA7517','#3A7A28','#C73535'];
+const TBGS   = ['#E1F5EE','#FBEAF0','#EEEDFE','#FAEEDA','#E8F5DC','#FAE8E8'];
+
+let G = {
+  players:[],     // {name, arch, money, pos, jailTurns, goojf, bust, skipTurn, doublesCount}
+  cur:0,
+  rolled:false,
+  gotDoubles:false,
+  doublesCount:0,
+  log:[],
+  props:{},       // sqIdx → {owner, houses} houses: 0-4, 5=hotel
+  vibes:[], pivots:[],
+  bank:{engineers:32, hotels:12},
+  auctionActive:false,
+  tradeActive:false,
+};
+
+// ════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════
+function shuffleDeck(d){return d.slice().sort(()=>Math.random()-.5)}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+
+function goSetup(){show('s-setup')}
+
+function quickStart(){
+  G.players=[
+    {name:'Founder #1',arch:'The Builder',money:1500,pos:0,jailTurns:0,goojf:0,bust:false,skipTurn:false,doublesCount:0},
+    {name:'Founder #2',arch:'The Visionary',money:1500,pos:0,jailTurns:0,goojf:0,bust:false,skipTurn:false,doublesCount:0},
+  ];
+  launch();
+}
+
+function startGame(){
+  const rows=document.querySelectorAll('#pslots .p-row');
+  G.players=[];
+  rows.forEach((row,i)=>{
+    const name=row.querySelector('.p-inp').value.trim();
+    const arch=row.querySelector('.p-sel').value;
+    if(name) G.players.push({name,arch,money:1500,pos:0,jailTurns:0,goojf:0,bust:false,skipTurn:false,doublesCount:0});
+  });
+  if(G.players.length<2){alert('Need at least 2 players!');return;}
+  launch();
+}
+
+function launch(){
+  G.cur=0; G.rolled=false; G.gotDoubles=false; G.doublesCount=0;
+  G.log=[]; G.props={}; G.vibes=shuffleDeck(VIBE_DECK); G.pivots=shuffleDeck(PIVOT_DECK);
+  G.bank={engineers:32,hotels:12};
+  show('s-game');
+  setTimeout(()=>{sizeBoard();buildBoard();renderAll();},60);
+}
+
+// ════════════════════════════════════════════════════════════
+// BOARD BUILD
+// ════════════════════════════════════════════════════════════
+function sizeBoard(){
+  const area=document.querySelector('.board-area');
+  const r=area.getBoundingClientRect();
+  const sz=Math.min(r.width-20,r.height-20);
+  const bwrap=document.getElementById('bwrap');
+  bwrap.style.width=sz+'px';
+  bwrap.style.height=sz+'px';
+}
+
+function buildBoard(){
+  const board=document.getElementById('board');
+  board.innerHTML='';
+
+  // Center
+  const ctr=document.createElement('div');
+  ctr.className='bcenter';
+  ctr.style.gridColumn='2/11';
+  ctr.style.gridRow='2/11';
+  ctr.innerHTML=`<div class="bc-t">AMBIENT<br>CAPITAL</div>
+    <div class="bc-p">🎧 THINE — THE ONLY AI THAT REMEMBERS YOU</div>
+    <div class="bc-s">your AI already knows you missed that standup.<br>it's been logging your vibes since tuesday.</div>`;
+  board.appendChild(ctr);
+
+  BOARD.forEach((sq,i)=>{
+    const pos=sqPos(i);
+    const el=document.createElement('div');
+    el.id='sq'+i;
+    el.style.gridColumn=pos.c;
+    el.style.gridRow=pos.r;
+
+    if(sq.t==='corner'){
+      el.className='corner';
+      el.innerHTML=`<div class="corner-em">${sq.emoji}</div>
+        <div class="corner-nm">${sq.name}</div>
+        <div class="corner-sb">${sq.sub||''}</div>`;
+    } else {
+      // Determine bar direction
+      let dir='';
+      if(pos.r===11) dir='top';
+      else if(pos.r===1) dir='bot';
+      else if(pos.c===1) dir='rgt';
+      else if(pos.c===11) dir='lft';
+      el.className=`cell ${dir}`;
+      el.onclick=()=>cellClick(i);
+
+      const pd=G.props[i];
+      if(sq.t==='prop'){
+        const ownedBy=pd!==undefined?pd.owner:-1;
+        if(ownedBy>=0) el.style.background=TBGS[ownedBy];
+        el.innerHTML=`<div class="cbar" style="background:${sq.col||'#ccc'}"></div>
+          <div class="cem">${sq.thine?'📡':'🏠'}</div>
+          <div class="cnm">${sq.name}</div>
+          <div class="cpr">$${sq.price}</div>`;
+        // Building dots
+        if(pd&&pd.houses>0){
+          const dot=document.createElement('div');
+          dot.className='own-dot';
+          const cnt=pd.houses===5?1:pd.houses;
+          const sym=pd.houses===5?'🏨':'⬛';
+          for(let x=0;x<cnt;x++){
+            const s=document.createElement('span');
+            s.style.background=TCOLS[pd.owner];
+            s.title=pd.houses===5?'GPU Cluster':pd.houses+' Engineer'+(pd.houses>1?'s':'');
+            dot.appendChild(s);
+          }
+          el.appendChild(dot);
+        }
+      } else if(sq.t==='rail'){
+        const ownedBy=pd!==undefined?pd.owner:-1;
+        if(ownedBy>=0) el.style.background=TBGS[ownedBy];
+        el.innerHTML=`<div class="cem">${sq.emoji}</div><div class="cnm">${sq.name}</div><div class="cpr">$${sq.price}</div>`;
+      } else if(sq.t==='util'){
+        const ownedBy=pd!==undefined?pd.owner:-1;
+        if(ownedBy>=0) el.style.background=TBGS[ownedBy];
+        el.innerHTML=`<div class="cem">${sq.emoji}</div><div class="cnm">${sq.name}</div><div class="cpr">$${sq.price}</div>`;
+      } else if(sq.t==='vibe'){
+        el.style.background='#FBEAF0';
+        el.innerHTML=`<div class="cem">${sq.emoji}</div><div class="cnm" style="color:#C94070">Vibe Card</div>`;
+      } else if(sq.t==='pivot'){
+        el.style.background='#E8F5DC';
+        el.innerHTML=`<div class="cem">${sq.emoji}</div><div class="cnm" style="color:#3A7A28">Pivot Card</div>`;
+      } else if(sq.t==='tax'){
+        el.innerHTML=`<div class="cem">${sq.emoji}</div><div class="cnm" style="color:#C73535">${sq.name}</div>`;
+      }
+    }
+    board.appendChild(el);
+  });
+  renderTokens();
+}
+
+function renderTokens(){
+  document.querySelectorAll('.tok').forEach(t=>t.remove());
+  const board=document.getElementById('board');
+  const br=board.getBoundingClientRect();
+  G.players.forEach((p,i)=>{
+    if(p.bust) return;
+    const sqEl=document.getElementById('sq'+p.pos);
+    if(!sqEl) return;
+    const r=sqEl.getBoundingClientRect();
+    const offX=[0,8,0,8][i%4];
+    const offY=[0,0,8,8][i%4];
+    const tok=document.createElement('div');
+    tok.className='tok';
+    tok.id='tok'+i;
+    tok.style.background=TCOLS[i];
+    tok.style.left=(r.left-br.left+r.width/2-6+(i%2===0?-5:5)+offX)+'px';
+    tok.style.top=(r.top-br.top+r.height/2-6+(i<2?-5:5)+offY)+'px';
+    tok.textContent=TEMS[i];
+    board.parentElement.appendChild(tok);
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+// SIDEBAR
+// ════════════════════════════════════════════════════════════
+function renderSidebar(){
+  const pc=document.getElementById('pcards');
+  pc.innerHTML='';
+  G.players.forEach((p,i)=>{
+    const ownedC=Object.values(G.props).filter(v=>v.owner===i).length;
+    const sqName=BOARD[p.pos]?BOARD[p.pos].name:'GO';
+    pc.innerHTML+=`<div class="pc${i===G.cur?' cur':''}${p.bust?' bust':''}">
+      <div class="pc-top">
+        <span>${TEMS[i]}</span>
+        <span class="pc-name">${p.name}</span>
+        ${i===G.cur?'<span class="turn-tag">TURN</span>':''}
+        ${p.goojf>0?'<span class="turn-tag" style="background:#B8920A">GOOJF</span>':''}
+      </div>
+      <div class="pc-arch">${p.arch}</div>
+      <div class="pc-money">$${p.money.toLocaleString()}</div>
+      <div class="pc-pos">${ownedC} props · ${sqName}${p.jailTurns>0?' · IN JAIL ('+p.jailTurns+')':''}</div>
+    </div>`;
+  });
+}
+
+function addLog(html){
+  G.log.unshift(html);
+  if(G.log.length>20) G.log.pop();
+  document.getElementById('alog').innerHTML=G.log.slice(0,12).map(l=>`<div class="log-item">${l}</div>`).join('');
+}
+
+function renderAll(){renderSidebar();renderTokens();}
+
+// ════════════════════════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════════════════════════
+let toastTimer;
+function toast(msg,type=''){
+  clearTimeout(toastTimer);
+  const t=document.getElementById('toast');
+  t.className=`toast on ${type}`;
+  t.innerHTML=msg;
+  toastTimer=setTimeout(()=>t.classList.remove('on'),3500);
+}
+
+// ════════════════════════════════════════════════════════════
+// DICE
+// ════════════════════════════════════════════════════════════
+const PIPS={1:[0,0,0,0,1,0,0,0,0],2:[1,0,0,0,0,0,0,0,1],3:[1,0,0,0,1,0,0,0,1],4:[1,0,1,0,0,0,1,0,1],5:[1,0,1,0,1,0,1,0,1],6:[1,0,1,1,0,1,1,0,1]};
+function drawDie(pfx,v){PIPS[v].forEach((on,i)=>{const p=document.getElementById(pfx+(i+1));if(p)p.className='pip'+(on?' on':'')});}
+
+function rollDice(){
+  if(G.rolled) return;
+  const p=G.players[G.cur];
+  
+  // Jail handling
+  if(p.jailTurns>0){
+    showJailOptions();
+    return;
+  }
+
+  doRoll();
+}
+
+function doRoll(fromJail=false){
+  G.rolled=true;
+  setActionBtns('');
+
+  const d1=Math.ceil(Math.random()*6);
+  const d2=Math.ceil(Math.random()*6);
+  const total=d1+d2;
+  const isDoubles=d1===d2;
+
+  document.getElementById('die1').classList.add('spin');
+  document.getElementById('die2').classList.add('spin');
+  document.getElementById('dtot').textContent='...';
+
+  setTimeout(()=>{
+    document.getElementById('die1').classList.remove('spin');
+    document.getElementById('die2').classList.remove('spin');
+    drawDie('a',d1); drawDie('b',d2);
+    document.getElementById('dtot').textContent=total;
+
+    const p=G.players[G.cur];
+
+    if(fromJail){
+      if(isDoubles){
+        p.jailTurns=0;
+        addLog(`<span class="ln">${p.name}</span> rolled doubles and escaped Just Pivoting!`);
+        toast(`🎲 Doubles! ${p.name} escaped Just Pivoting!`,'good');
+        doMove(total,false);
+      } else {
+        p.jailTurns--;
+        if(p.jailTurns===0){
+          p.money-=50;
+          addLog(`<span class="ln">${p.name}</span> paid <span class="lb">$50</span> to leave Just Pivoting`);
+          toast('Paid $50 to leave Just Pivoting. Finally.','bad');
+          doMove(total,false);
+        } else {
+          addLog(`<span class="ln">${p.name}</span> stays in Just Pivoting (${p.jailTurns} turns left)`);
+          toast(`Still in Just Pivoting. ${p.jailTurns} turn(s) left.`,'bad');
+          renderSidebar();
+          showEndBtn();
+        }
+      }
+      return;
+    }
+
+    if(isDoubles){
+      G.doublesCount++;
+      if(G.doublesCount>=3){
+        // 3 doubles in a row = go to jail
+        addLog(`<span class="ln">${p.name}</span> rolled doubles 3 times — sent to Just Pivoting!`);
+        toast('🚔 Three doubles! Go directly to Just Pivoting.','bad');
+        sendToJail();
+        return;
+      }
+      G.gotDoubles=true;
+      document.getElementById('doublesNote').style.display='';
+      addLog(`<span class="ln">${p.name}</span> rolled doubles (${d1}+${d2}) — rolls again!`);
+    } else {
+      G.doublesCount=0;
+      G.gotDoubles=false;
+      document.getElementById('doublesNote').style.display='none';
+    }
+
+    doMove(total,isDoubles);
+  },420);
+}
+
+// ════════════════════════════════════════════════════════════
+// MOVEMENT
+// ════════════════════════════════════════════════════════════
+function doMove(steps, isDoubles, diceRoll){
+  const p=G.players[G.cur];
+  const oldPos=p.pos;
+  let newPos=(p.pos+steps)%40;
+
+  // Pass GO?
+  if(newPos<oldPos||(oldPos===0&&steps>0)){
+    p.money+=200;
+    addLog(`<span class="ln">${p.name}</span> passed GO — <span class="lg">+$200</span>`);
+    toast(`🚀 ${p.name} passed GO! Collected $200.`,'good');
+  }
+
+  p.pos=newPos;
+
+  // Highlight
+  document.querySelectorAll('.cell.lit').forEach(c=>c.classList.remove('lit'));
+  const sqEl=document.getElementById('sq'+newPos);
+  if(sqEl) sqEl.classList.add('lit');
+
+  renderAll();
+  addLog(`<span class="ln">${p.name}</span> → <b>${BOARD[newPos].name}</b>`);
+
+  setTimeout(()=>land(newPos, isDoubles, diceRoll||steps),380);
+}
+
+// ════════════════════════════════════════════════════════════
+// LANDING
+// ════════════════════════════════════════════════════════════
+function land(idx, isDoubles, diceRoll){
+  const sq=BOARD[idx];
+  const p=G.players[G.cur];
+  const pi=G.cur;
+
+  if(sq.t==='corner'){
+    if(sq.goToJail){
+      sendToJail();
+    } else if(sq.jail){
+      // visiting
+      toast(`⛓️ Just visiting Just Pivoting. Nothing to see here.`);
+      afterLand(isDoubles);
+    } else {
+      // GO or Free Parking
+      toast(`📍 ${sq.name}`);
+      afterLand(isDoubles);
+    }
+  }
+  else if(sq.t==='prop'||sq.t==='rail'||sq.t==='util'){
+    handlePurchaseable(idx, isDoubles, diceRoll);
+  }
+  else if(sq.t==='vibe'){
+    const card=drawVibe();
+    executeCard(card,'vibe',isDoubles);
+  }
+  else if(sq.t==='pivot'){
+    const card=drawPivot();
+    executeCard(card,'pivot',isDoubles);
+  }
+  else if(sq.t==='tax'){
+    handleTax(sq, isDoubles);
+  }
+}
+
+function handlePurchaseable(idx, isDoubles, diceRoll){
+  const sq=BOARD[idx];
+  const p=G.players[G.cur];
+  const pi=G.cur;
+  const pd=G.props[idx];
+
+  if(pd===undefined){
+    // Unowned — offer to buy
+    showBuyModal(idx, isDoubles);
+  } else if(pd.owner===pi){
+    toast(`🏠 Your property. Looking good.`);
+    afterLand(isDoubles);
+  } else {
+    // Pay rent
+    const owner=G.players[pd.owner];
+    let rent=calcRent(idx, diceRoll);
+
+    // Mortgaged?
+    if(pd.mortgaged){
+      toast(`Property mortgaged — no rent owed!`);
+      afterLand(isDoubles);
+      return;
+    }
+
+    p.money-=rent;
+    owner.money+=rent;
+    addLog(`<span class="ln">${p.name}</span> paid <span class="lb">$${rent}</span> rent → <span class="ln">${owner.name}</span>`);
+    toast(`💸 Paid $${rent} rent to ${owner.name} for ${sq.name}.`,'bad');
+
+    renderSidebar();
+    checkBankruptcy(pi, pd.owner, isDoubles);
+  }
+}
+
+function calcRent(idx, diceRoll){
+  const sq=BOARD[idx];
+  const pd=G.props[idx];
+  if(!pd) return 0;
+
+  if(sq.t==='rail'){
+    const ownedRails=RAILS.filter(r=>G.props[r]&&G.props[r].owner===pd.owner&&!G.props[r].mortgaged).length;
+    return [0,25,50,100,200][ownedRails];
+  }
+  if(sq.t==='util'){
+    const ownedUtils=UTILS.filter(u=>G.props[u]&&G.props[u].owner===pd.owner&&!G.props[u].mortgaged).length;
+    const mult=ownedUtils===2?10:4;
+    return mult*(diceRoll||7); // fallback if no diceRoll
+  }
+  // Property
+  if(pd.mortgaged) return 0;
+  if(pd.houses===0){
+    // Check if owns full group
+    const grp=GROUPS[sq.grp];
+    const ownsAll=grp.members.every(m=>G.props[m]&&G.props[m].owner===pd.owner&&!G.props[m].mortgaged);
+    return ownsAll? sq.rent[0]*2 : sq.rent[0];
+  }
+  const hIdx=Math.min(pd.houses,5);
+  return sq.rent[hIdx];
+}
+
+function handleTax(sq, isDoubles){
+  const p=G.players[G.cur];
+  if(sq.pct){
+    // Income tax: pay $200 or 10% of assets, whichever less
+    const assets=calcAssets(G.cur);
+    const pct=Math.floor(assets*0.1);
+    const showModal_=()=>{
+      const mc=document.getElementById('mc');
+      mc.innerHTML=`<div class="m-type" style="color:#C73535">TAX</div>
+        <div class="m-title">${sq.emoji} ${sq.name}</div>
+        <div class="m-flavor">${sq.flavor}</div>
+        <div class="m-desc">Choose: pay <strong>$200 flat</strong> OR <strong>10% of total assets ($${pct})</strong>. Pick the lower amount.</div>
+        <div class="m-btns">
+          <button class="mbtn buy" onclick="payTax(200,${isDoubles})">Pay $200</button>
+          <button class="mbtn pass" onclick="payTax(${pct},${isDoubles})">Pay 10% ($${pct})</button>
+        </div>`;
+      openModal();
+    };
+    showModal_();
+  } else {
+    p.money-=sq.amt;
+    addLog(`<span class="ln">${p.name}</span> paid tax <span class="lb">$${sq.amt}</span>`);
+    renderSidebar();
+    showInfoModal('tax',sq.name,sq.emoji,sq.flavor,`You paid $${sq.amt}. Ouch.`,'#FAE8E8',isDoubles);
+  }
+}
+
+function payTax(amt,isDoubles){
+  const p=G.players[G.cur];
+  p.money-=amt;
+  addLog(`<span class="ln">${p.name}</span> paid tax <span class="lb">$${amt}</span>`);
+  renderSidebar();
+  closeModal();
+  afterLand(isDoubles);
+}
+
+function calcAssets(pi){
+  const p=G.players[pi];
+  let total=p.money;
+  Object.entries(G.props).forEach(([idx,pd])=>{
+    if(pd.owner===pi){
+      const sq=BOARD[parseInt(idx)];
+      total+=pd.mortgaged?sq.mort:sq.price;
+      if(pd.houses>0&&!pd.mortgaged){
+        const grp=GROUPS[sq.grp];
+        if(grp){
+          if(pd.houses===5) total+=grp.hotelCost/2;
+          else total+=pd.houses*(grp.buildCost/2);
+        }
+      }
+    }
+  });
+  return total;
+}
+
+// ════════════════════════════════════════════════════════════
+// CARDS
+// ════════════════════════════════════════════════════════════
+function drawVibe(){
+  if(G.vibes.length===0) G.vibes=shuffleDeck(VIBE_DECK);
+  return G.vibes.pop();
+}
+function drawPivot(){
+  if(G.pivots.length===0) G.pivots=shuffleDeck(PIVOT_DECK);
+  return G.pivots.pop();
+}
+
+function executeCard(card,type,isDoubles){
+  const p=G.players[G.cur];
+  const pi=G.cur;
+  const isVibe=type==='vibe';
+  const accentCol=isVibe?'#C94070':'#3A7A28';
+  const accentBg=isVibe?'#FBEAF0':'#E8F5DC';
+
+  let effectHtml='';
+  let afterFn=()=>afterLand(isDoubles);
+
+  switch(card.fx){
+    case 'earn':
+      p.money+=card.amt;
+      effectHtml=`<span style="color:var(--tl);font-weight:600">+$${card.amt} collected.</span>`;
+      addLog(`<span class="ln">${p.name}</span> card: <span class="lg">+$${card.amt}</span>`);
+      renderSidebar();
+      break;
+    case 'pay':
+      p.money-=card.amt;
+      effectHtml=`<span style="color:var(--rd);font-weight:600">-$${card.amt} paid.</span>`;
+      addLog(`<span class="ln">${p.name}</span> card: <span class="lb">-$${card.amt}</span>`);
+      renderSidebar();
+      afterFn=()=>checkBankruptcy(pi,-1,isDoubles);
+      break;
+    case 'collect_each':
+      let total=0;
+      G.players.forEach((op,oi)=>{
+        if(oi!==pi&&!op.bust){
+          const pay=Math.min(op.money,card.amt);
+          op.money-=pay; p.money+=pay; total+=pay;
+        }
+      });
+      effectHtml=`<span style="color:var(--tl);font-weight:600">+$${total} collected from all players.</span>`;
+      addLog(`<span class="ln">${p.name}</span> collected $${card.amt} from each player`);
+      renderSidebar();
+      break;
+    case 'pay_each':
+      let paid=0;
+      G.players.forEach((op,oi)=>{
+        if(oi!==pi&&!op.bust){p.money-=card.amt;op.money+=card.amt;paid+=card.amt;}
+      });
+      effectHtml=`<span style="color:var(--rd);font-weight:600">-$${paid} paid to all players.</span>`;
+      addLog(`<span class="ln">${p.name}</span> paid $${card.amt} to each player`);
+      renderSidebar();
+      afterFn=()=>checkBankruptcy(pi,-1,isDoubles);
+      break;
+    case 'goojf':
+      p.goojf++;
+      effectHtml=`<span style="color:#B8920A;font-weight:600">Get Out of Just Pivoting Free card received. Keep it.</span>`;
+      addLog(`<span class="ln">${p.name}</span> got a Get Out of Just Pivoting Free card`);
+      renderSidebar();
+      break;
+    case 'jail':
+      effectHtml=`<span style="color:var(--rd);font-weight:600">Go directly to Just Pivoting.</span>`;
+      afterFn=()=>{closeModal();sendToJail();};
+      break;
+    case 'goto':
+      const dest=card.pos;
+      const destName=BOARD[dest].name;
+      if(card.collect&&(dest===0||dest<p.pos)){
+        p.money+=card.collect;
+        addLog(`<span class="ln">${p.name}</span> passed GO — <span class="lg">+$200</span>`);
+      }
+      effectHtml=`<span style="color:var(--tl);font-weight:600">Moving to ${destName}.</span>`;
+      addLog(`<span class="ln">${p.name}</span> moved to <b>${destName}</b> via card`);
+      afterFn=()=>{
+        closeModal();
+        p.pos=dest;
+        renderAll();
+        document.querySelectorAll('.cell.lit').forEach(c=>c.classList.remove('lit'));
+        const sqEl=document.getElementById('sq'+dest);
+        if(sqEl) sqEl.classList.add('lit');
+        // If doubles=true for pivot card, means double rent
+        setTimeout(()=>land(dest,isDoubles,card.double?null:null),350);
+      };
+      break;
+    case 'back':
+      const newP=Math.max(0,p.pos-card.spaces);
+      effectHtml=`<span style="color:var(--rd);font-weight:600">Moved back ${card.spaces} spaces.</span>`;
+      addLog(`<span class="ln">${p.name}</span> moved back ${card.spaces} spaces`);
+      afterFn=()=>{
+        closeModal();
+        p.pos=newP;
+        renderAll();
+        setTimeout(()=>land(newP,isDoubles),350);
+      };
+      break;
+    case 'nearest_rail':
+      const nr=nearestOf(p.pos,RAILS);
+      effectHtml=`<span style="color:var(--tl);font-weight:600">Moving to ${BOARD[nr].name}.${card.double?' Double rent if owned.':''}</span>`;
+      afterFn=()=>{
+        closeModal();
+        const oldP2=p.pos;
+        p.pos=nr;
+        if(nr<oldP2){p.money+=200;addLog(`<span class="ln">${p.name}</span> passed GO — <span class="lg">+$200</span>`);}
+        renderAll();
+        // Double rent handled: if owned by another player, double
+        const pd2=G.props[nr];
+        if(pd2&&pd2.owner>=0&&pd2.owner!==G.cur&&!pd2.mortgaged&&card.double){
+          const ownedR=RAILS.filter(r=>G.props[r]&&G.props[r].owner===pd2.owner).length;
+          const rent=[0,50,100,200,400][ownedR];
+          p.money-=rent;G.players[pd2.owner].money+=rent;
+          addLog(`<span class="ln">${p.name}</span> paid double rail rent <span class="lb">$${rent}</span>`);
+          toast(`🚂 Double rent! Paid $${rent}.`,'bad');
+          renderSidebar();
+          checkBankruptcy(G.cur,pd2.owner,isDoubles);
+        } else {
+          setTimeout(()=>land(nr,isDoubles),350);
+        }
+      };
+      break;
+    case 'nearest_util':
+      const nu=nearestOf(p.pos,UTILS);
+      effectHtml=`<span style="color:var(--tl);font-weight:600">Moving to ${BOARD[nu].name}. 10× dice if owned.</span>`;
+      afterFn=()=>{
+        closeModal();
+        const oldP3=p.pos;
+        p.pos=nu;
+        if(nu<oldP3){p.money+=200;addLog(`<span class="ln">${p.name}</span> passed GO — <span class="lg">+$200</span>`);}
+        renderAll();
+        const pd3=G.props[nu];
+        if(pd3&&pd3.owner>=0&&pd3.owner!==G.cur&&!pd3.mortgaged){
+          // Roll to determine amount
+          const roll=Math.ceil(Math.random()*6)+Math.ceil(Math.random()*6);
+          const rent=roll*10;
+          p.money-=rent;G.players[pd3.owner].money+=rent;
+          addLog(`<span class="ln">${p.name}</span> paid 10× utility rent <span class="lb">$${rent}</span> (rolled ${roll})`);
+          toast(`⚡ 10× dice rent! Rolled ${roll}, paid $${rent}.`,'bad');
+          renderSidebar();
+          checkBankruptcy(G.cur,pd3.owner,isDoubles);
+        } else {
+          setTimeout(()=>land(nu,isDoubles),350);
+        }
+      };
+      break;
+    case 'repair':
+      let repairTotal=0;
+      Object.values(G.props).forEach(pd=>{
+        if(pd.owner===pi&&!pd.mortgaged){
+          if(pd.houses===5) repairTotal+=card.ho;
+          else repairTotal+=pd.houses*card.h;
+        }
+      });
+      p.money-=repairTotal;
+      effectHtml=`<span style="color:var(--rd);font-weight:600">Paid $${repairTotal} in repairs.</span>`;
+      addLog(`<span class="ln">${p.name}</span> paid <span class="lb">$${repairTotal}</span> in repairs`);
+      renderSidebar();
+      afterFn=()=>checkBankruptcy(pi,-1,isDoubles);
+      break;
+    default:
+      break;
+  }
+
+  showCardModal(type,card.txt,effectHtml,accentCol,accentBg,afterFn);
+}
+
+function nearestOf(pos,list){
+  for(let i=1;i<40;i++){
+    const np=(pos+i)%40;
+    if(list.includes(np)) return np;
+  }
+  return list[0];
+}
+
+// ════════════════════════════════════════════════════════════
+// MODALS
+// ════════════════════════════════════════════════════════════
+function showBuyModal(idx, isDoubles){
+  const sq=BOARD[idx];
+  const p=G.players[G.cur];
+  const can=p.money>=sq.price;
+  const mc=document.getElementById('mc');
+  const grpInfo=sq.grp&&GROUPS[sq.grp]?GROUPS[sq.grp]:{color:'#555',bg:'#eee'};
+
+  mc.innerHTML=`
+    ${sq.grp?`<div class="m-bar" style="background:${grpInfo.color}"></div>`:''}
+    <div class="m-type" style="color:${grpInfo.color||'#555'}">${sq.grp||sq.t.toUpperCase()}</div>
+    <div class="m-title">${sq.thine?'📡 ':''}${sq.name}</div>
+    <div class="m-flavor">${sq.flavor||''}</div>
+    <div class="m-row"><span class="m-lbl">Purchase price</span><span class="m-val">$${sq.price}</span></div>
+    ${sq.t==='prop'?`<div class="m-row"><span class="m-lbl">Base rent</span><span class="m-val">$${sq.rent[0]}</span></div>
+    <div class="m-row"><span class="m-lbl">Full group (no buildings)</span><span class="m-val">$${sq.rent[0]*2}</span></div>
+    <div class="m-row"><span class="m-lbl">w/ GPU Cluster</span><span class="m-val">$${sq.rent[5]}</span></div>`:''}
+    ${sq.t==='rail'?`<div class="m-row"><span class="m-lbl">Rent (own all 4)</span><span class="m-val">$200</span></div>`:''}
+    ${sq.t==='util'?`<div class="m-row"><span class="m-lbl">Rent</span><span class="m-val">4× or 10× dice</span></div>`:''}
+    <div class="m-row"><span class="m-lbl">Mortgage value</span><span class="m-val">$${sq.mort}</span></div>
+    <div class="m-row"><span class="m-lbl">Your balance</span><span class="m-val" style="color:${can?'var(--tl)':'var(--rd)'}">$${p.money}</span></div>
+    <div class="m-btns">
+      <button class="mbtn buy" onclick="buyProp(${idx},${isDoubles})" ${!can?'disabled':''}>${can?'Buy for $'+sq.price:'Cannot afford'}</button>
+      <button class="mbtn pass" onclick="closeModal();startAuction(${idx},${isDoubles})">Pass → Auction</button>
+    </div>`;
+  openModal();
+}
+
+function buyProp(idx,isDoubles){
+  const sq=BOARD[idx];
+  const p=G.players[G.cur];
+  G.props[idx]={owner:G.cur,houses:0,mortgaged:false};
+  p.money-=sq.price;
+  addLog(`<span class="ln">${p.name}</span> bought <b>${sq.name}</b> for <span class="lb">$${sq.price}</span>`);
+  toast(`🏠 Bought ${sq.name}!`,'good');
+  closeModal();
+  buildBoard();
+  renderSidebar();
+  afterLand(isDoubles);
+}
+
+function startAuction(idx,isDoubles){
+  const sq=BOARD[idx];
+  const activePlayers=G.players.filter((p,i)=>!p.bust);
+  const mc=document.getElementById('mc');
+  mc.innerHTML=`
+    <div class="m-type" style="color:#7777dd">AUCTION</div>
+    <div class="m-title">🔨 ${sq.name}</div>
+    <div class="m-desc">Declined by current player. All players may now bid. Minimum bid: $1. Highest bid wins.</div>
+    <div class="m-row"><span class="m-lbl">Listed price</span><span class="m-val">$${sq.price}</span></div>
+    <div class="auction-panel">
+      <div class="auction-title">Place Bids</div>
+      <div class="auction-bids">${G.players.map((p,i)=>p.bust?'':
+        `<div class="bid-inp"><label>${TEMS[i]} ${p.name.split(' ')[0]}</label>
+        <input type="number" id="bid${i}" min="0" max="${p.money}" value="0" style="color:var(--dk)"></div>`
+      ).join('')}</div>
+    </div>
+    <div class="m-btns">
+      <button class="mbtn ok" onclick="resolveAuction(${idx},${isDoubles})">Resolve Auction</button>
+      <button class="mbtn pass" onclick="closeModal();afterLand(${isDoubles})">No bids — return to bank</button>
+    </div>`;
+  openModal();
+}
+
+function resolveAuction(idx,isDoubles){
+  let maxBid=-1,winner=-1;
+  G.players.forEach((p,i)=>{
+    if(p.bust) return;
+    const inp=document.getElementById('bid'+i);
+    if(!inp) return;
+    const bid=parseInt(inp.value)||0;
+    if(bid>maxBid&&bid<=p.money&&bid>0){maxBid=bid;winner=i;}
+  });
+  if(winner<0){
+    toast('No valid bids. Property returned to bank.');
+    closeModal();
+    afterLand(isDoubles);
+    return;
+  }
+  const sq=BOARD[idx];
+  G.props[idx]={owner:winner,houses:0,mortgaged:false};
+  G.players[winner].money-=maxBid;
+  addLog(`<span class="ln">${G.players[winner].name}</span> won auction for <b>${sq.name}</b> at <span class="lb">$${maxBid}</span>`);
+  toast(`🔨 ${G.players[winner].name} won the auction for $${maxBid}!`,'good');
+  closeModal();
+  buildBoard();
+  renderSidebar();
+  afterLand(isDoubles);
+}
+
+function showInfoModal(type,name,emoji,flavor,result,bg,isDoubles){
+  const tc={tax:'#C73535',bonus:'#3A7A28',corner:'#7F77DD',penalty:'#C73535'};
+  const mc=document.getElementById('mc');
+  mc.innerHTML=`<div class="m-type" style="color:${tc[type]||'#888'}">${type.toUpperCase()}</div>
+    <div class="m-title">${emoji} ${name}</div>
+    <div class="m-flavor">${flavor||''}</div>
+    <div class="m-effect" style="background:${bg}">${result}</div>
+    <div class="m-btns"><button class="mbtn ok" onclick="closeModal();afterLand(${isDoubles})">Got it</button></div>`;
+  openModal();
+}
+
+function showCardModal(type,txt,result,col,bg,afterFn){
+  const mc=document.getElementById('mc');
+  mc.innerHTML=`<div class="m-type" style="color:${col}">${type.toUpperCase()} CARD 🃏</div>
+    <div class="m-title" style="font-size:1rem;line-height:1.6;font-style:italic">"${txt}"</div>
+    <div class="m-effect" style="background:${bg};margin-top:1rem">${result||'Effect applied.'}</div>
+    <div class="m-btns"><button class="mbtn ok" onclick="closeModal();cardAfter()">Got it</button></div>`;
+  window._cardAfter=afterFn;
+  openModal();
+}
+
+function cardAfter(){if(window._cardAfter){const f=window._cardAfter;window._cardAfter=null;f();}}
+
+function cellClick(idx){
+  const sq=BOARD[idx];
+  if(sq.t!=='prop'&&sq.t!=='rail'&&sq.t!=='util') return;
+  const pd=G.props[idx];
+  const mc=document.getElementById('mc');
+  const grp=sq.grp&&GROUPS[sq.grp]?GROUPS[sq.grp]:{color:'#555',bg:'#eee'};
+  const ownedBy=pd?pd.owner:-1;
+
+  mc.innerHTML=`
+    ${sq.grp?`<div class="m-bar" style="background:${grp.color}"></div>`:''}
+    <div class="m-type" style="color:${grp.color||'#555'}">${sq.grp||sq.t.toUpperCase()}</div>
+    ${ownedBy>=0?`<div class="owned-tag" style="background:${TBGS[ownedBy]};color:${TCOLS[ownedBy]}">Owned by ${G.players[ownedBy].name}</div>`:''}
+    ${pd&&pd.mortgaged?`<div class="owned-tag" style="background:#FAE8E8;color:#C73535">MORTGAGED</div>`:''}
+    <div class="m-title">${sq.thine?'📡 ':''}${sq.name}</div>
+    <div class="m-flavor">${sq.flavor||''}</div>
+    <div class="m-row"><span class="m-lbl">Price</span><span class="m-val">$${sq.price}</span></div>
+    <div class="m-row"><span class="m-lbl">Mortgage value</span><span class="m-val">$${sq.mort}</span></div>
+    ${sq.t==='prop'?`
+    <div class="m-row"><span class="m-lbl">Base rent</span><span class="m-val">$${sq.rent[0]}</span></div>
+    <div class="m-row"><span class="m-lbl">Full group (no bldgs)</span><span class="m-val">$${sq.rent[0]*2}</span></div>
+    <div class="m-row"><span class="m-lbl">1 Engineer</span><span class="m-val">$${sq.rent[1]}</span></div>
+    <div class="m-row"><span class="m-lbl">2 Engineers</span><span class="m-val">$${sq.rent[2]}</span></div>
+    <div class="m-row"><span class="m-lbl">3 Engineers</span><span class="m-val">$${sq.rent[3]}</span></div>
+    <div class="m-row"><span class="m-lbl">4 Engineers</span><span class="m-val">$${sq.rent[4]}</span></div>
+    <div class="m-row"><span class="m-lbl">GPU Cluster (hotel)</span><span class="m-val">$${sq.rent[5]}</span></div>`:''}
+    ${sq.t==='rail'?`<div class="m-row"><span class="m-lbl">Rent: 1/2/3/4 owned</span><span class="m-val">$25/$50/$100/$200</span></div>`:''}
+    ${sq.t==='util'?`<div class="m-row"><span class="m-lbl">Rent: 1 owned</span><span class="m-val">4× dice roll</span></div>
+    <div class="m-row"><span class="m-lbl">Rent: both owned</span><span class="m-val">10× dice roll</span></div>`:''}
+    ${pd&&pd.houses>0&&sq.t==='prop'?`<div class="m-row"><span class="m-lbl">Current buildings</span><span class="m-val">${pd.houses===5?'1 GPU Cluster':pd.houses+' Engineer'+(pd.houses>1?'s':'')}</span></div>`:''}
+    <div class="m-btns">
+      ${ownedBy===G.cur&&!pd.mortgaged?`<button class="mbtn buy" onclick="showBuildModal(${idx})">Build / Manage</button>`:''}
+      ${ownedBy===G.cur&&!pd.mortgaged&&pd.houses===0?`<button class="mbtn warn" onclick="mortgageProp(${idx})">Mortgage ($${sq.mort})</button>`:''}
+      ${ownedBy===G.cur&&pd.mortgaged?`<button class="mbtn buy" onclick="unmortgageProp(${idx})">Unmortgage ($${Math.floor(sq.mort*1.1)})</button>`:''}
+      <button class="mbtn pass" onclick="closeModal()">Close</button>
+    </div>`;
+  openModal();
+}
+
+function showBuildModal(idx){
+  const sq=BOARD[idx];
+  const pd=G.props[idx];
+  const p=G.players[G.cur];
+  const grp=GROUPS[sq.grp];
+  const ownsAll=grp.members.every(m=>G.props[m]&&G.props[m].owner===G.cur&&!G.props[m].mortgaged);
+  const mc=document.getElementById('mc');
+
+  const buildingStatus=grp.members.map(m=>{
+    const mpd=G.props[m];
+    const msq=BOARD[m];
+    const h=mpd?mpd.houses:0;
+    return `<div class="m-row"><span class="m-lbl">${msq.name}</span><span class="m-val">${h===5?'GPU Cluster':h+' eng'}</span></div>`;
+  }).join('');
+
+  mc.innerHTML=`
+    <div class="m-bar" style="background:${grp.color}"></div>
+    <div class="m-type" style="color:${grp.color}">${sq.grp} Group</div>
+    <div class="m-title">Build on ${sq.name}</div>
+    ${!ownsAll?`<div class="m-desc" style="color:var(--rd)">You must own all properties in this group before building.</div>`:''}
+    ${buildingStatus}
+    <div class="m-row"><span class="m-lbl">Engineer cost</span><span class="m-val">$${grp.buildCost}</span></div>
+    <div class="m-row"><span class="m-lbl">GPU Cluster cost</span><span class="m-val">$${grp.hotelCost}</span></div>
+    <div class="m-row"><span class="m-lbl">Bank Engineers left</span><span class="m-val">${G.bank.engineers}</span></div>
+    <div class="m-row"><span class="m-lbl">Bank GPU Clusters left</span><span class="m-val">${G.bank.hotels}</span></div>
+    <div class="m-row"><span class="m-lbl">Your balance</span><span class="m-val">$${p.money}</span></div>
+    <div class="m-btns">
+      ${ownsAll&&canBuildOn(idx,1)?`<button class="mbtn buy" onclick="buildOnProp(${idx},1)">+ Engineer ($${grp.buildCost})</button>`:''}
+      ${ownsAll&&pd.houses===4&&G.bank.hotels>0&&p.money>=grp.hotelCost?`<button class="mbtn buy" onclick="buildOnProp(${idx},5)">→ GPU Cluster ($${grp.hotelCost})</button>`:''}
+      ${pd.houses>0&&pd.houses<5?`<button class="mbtn warn" onclick="sellBldg(${idx},-1)">Sell Engineer (+$${grp.buildCost/2})</button>`:''}
+      ${pd.houses===5?`<button class="mbtn warn" onclick="sellBldg(${idx},-5)">Sell GPU Cluster (+$${grp.hotelCost/2})</button>`:''}
+      <button class="mbtn pass" onclick="cellClick(${idx})">Back</button>
+    </div>`;
+}
+
+function canBuildOn(idx,add){
+  const sq=BOARD[idx];
+  const pd=G.props[idx];
+  const grp=GROUPS[sq.grp];
+  const p=G.players[G.cur];
+  if(!grp) return false;
+  if(pd.houses>=4) return false;
+  if(G.bank.engineers<=0) return false;
+  if(p.money<grp.buildCost) return false;
+  // Even building check
+  const maxOther=Math.max(...grp.members.filter(m=>m!==idx).map(m=>G.props[m]?G.props[m].houses:0));
+  if(pd.houses>=maxOther) return true;
+  return false;
+}
+
+function buildOnProp(idx,type){
+  const sq=BOARD[idx];
+  const pd=G.props[idx];
+  const grp=GROUPS[sq.grp];
+  const p=G.players[G.cur];
+
+  if(type===5){
+    // Hotel
+    p.money-=grp.hotelCost;
+    G.bank.engineers+=4; G.bank.hotels--;
+    pd.houses=5;
+    addLog(`<span class="ln">${p.name}</span> built GPU Cluster on <b>${sq.name}</b>`);
+    toast(`🖥️ GPU Cluster built on ${sq.name}!`,'good');
+  } else {
+    p.money-=grp.buildCost;
+    G.bank.engineers--;
+    pd.houses++;
+    addLog(`<span class="ln">${p.name}</span> built Engineer on <b>${sq.name}</b>`);
+    toast(`👷 Engineer added to ${sq.name}.`,'good');
+  }
+  buildBoard();
+  renderSidebar();
+  showBuildModal(idx);
+}
+
+function sellBldg(idx,type){
+  const sq=BOARD[idx];
+  const pd=G.props[idx];
+  const grp=GROUPS[sq.grp];
+  const p=G.players[G.cur];
+
+  if(type===-5){
+    // Sell hotel
+    p.money+=grp.hotelCost/2;
+    G.bank.hotels++;
+    pd.houses=0;
+    addLog(`<span class="ln">${p.name}</span> sold GPU Cluster from <b>${sq.name}</b> for $${grp.hotelCost/2}`);
+  } else {
+    // Check even selling
+    const minOther=Math.min(...GROUPS[sq.grp].members.filter(m=>m!==idx).map(m=>G.props[m]?G.props[m].houses:0));
+    if(pd.houses<=minOther){toast('Must sell evenly across the group.','bad');return;}
+    p.money+=grp.buildCost/2;
+    G.bank.engineers++;
+    pd.houses--;
+    addLog(`<span class="ln">${p.name}</span> sold Engineer from <b>${sq.name}</b> for $${grp.buildCost/2}`);
+  }
+  buildBoard();
+  renderSidebar();
+  showBuildModal(idx);
+}
+
+function mortgageProp(idx){
+  const sq=BOARD[idx];
+  const p=G.players[G.cur];
+  G.props[idx].mortgaged=true;
+  p.money+=sq.mort;
+  addLog(`<span class="ln">${p.name}</span> mortgaged <b>${sq.name}</b> for <span class="lg">$${sq.mort}</span>`);
+  toast(`Mortgaged ${sq.name} for $${sq.mort}.`);
+  buildBoard();
+  renderSidebar();
+  closeModal();
+}
+
+function unmortgageProp(idx){
+  const sq=BOARD[idx];
+  const p=G.players[G.cur];
+  const cost=Math.floor(sq.mort*1.1);
+  if(p.money<cost){toast('Not enough money to unmortgage.','bad');return;}
+  G.props[idx].mortgaged=false;
+  p.money-=cost;
+  addLog(`<span class="ln">${p.name}</span> unmortgaged <b>${sq.name}</b> for <span class="lb">$${cost}</span>`);
+  toast(`Unmortgaged ${sq.name} for $${cost}.`,'good');
+  buildBoard();
+  renderSidebar();
+  closeModal();
+}
+
+// ════════════════════════════════════════════════════════════
+// JAIL
+// ════════════════════════════════════════════════════════════
+function showJailOptions(){
+  const p=G.players[G.cur];
+  const mc=document.getElementById('mc');
+  mc.innerHTML=`<div class="m-type" style="color:var(--rd)">JUST PIVOTING (IN JAIL)</div>
+    <div class="m-title">⛓️ You're in Just Pivoting</div>
+    <div class="m-desc">Turns remaining: <strong>${p.jailTurns}</strong> before forced payment.<br><br>
+    Options: Pay $50 and roll, use your GOOJF card, or try to roll doubles.</div>
+    <div class="m-row"><span class="m-lbl">Your balance</span><span class="m-val">$${p.money}</span></div>
+    <div class="m-row"><span class="m-lbl">GOOJF cards</span><span class="m-val">${p.goojf}</span></div>
+    <div class="m-btns">
+      <button class="mbtn buy" onclick="jailPay()">Pay $50 + Roll</button>
+      ${p.goojf>0?`<button class="mbtn buy" onclick="jailCard()">Use GOOJF Card</button>`:''}
+      <button class="mbtn pass" onclick="closeModal();doRoll(true)">Try for Doubles</button>
+    </div>`;
+  openModal();
+}
+
+function jailPay(){
+  const p=G.players[G.cur];
+  p.money-=50; p.jailTurns=0;
+  addLog(`<span class="ln">${p.name}</span> paid $50 to leave Just Pivoting`);
+  closeModal();
+  doRoll(false);
+}
+
+function jailCard(){
+  const p=G.players[G.cur];
+  p.goojf--; p.jailTurns=0;
+  addLog(`<span class="ln">${p.name}</span> used GOOJF card to leave Just Pivoting`);
+  toast('🃏 Used Get Out of Just Pivoting Free card!','good');
+  closeModal();
+  doRoll(false);
+}
+
+function sendToJail(){
+  const p=G.players[G.cur];
+  p.pos=JAIL_POS; p.jailTurns=3; G.doublesCount=0; G.gotDoubles=false;
+  document.getElementById('doublesNote').style.display='none';
+  renderAll();
+  addLog(`<span class="ln">${p.name}</span> sent to Just Pivoting`);
+  renderSidebar();
+  showEndBtn();
+}
+
+// ════════════════════════════════════════════════════════════
+// TRADE
+// ════════════════════════════════════════════════════════════
+function showTradeModal(){
+  const pi=G.cur;
+  const p=G.players[pi];
+  const mc=document.getElementById('mc');
+  const otherPlayers=G.players.map((op,oi)=>op.bust||oi===pi?null:{name:op.name,i:oi}).filter(Boolean);
+  if(!otherPlayers.length){toast('No other players to trade with.');return;}
+
+  mc.innerHTML=`<div class="m-type" style="color:var(--gn)">TRADE</div>
+    <div class="m-title">📋 Propose a Trade</div>
+    <div class="m-desc">Select a player to trade with. All trades require mutual agreement.</div>
+    <div class="m-btns">${otherPlayers.map(op=>
+      `<button class="mbtn buy" onclick="showTradeWith(${op.i})">${TEMS[op.i]} ${op.name}</button>`
+    ).join('')}
+    <button class="mbtn pass" onclick="closeModal()">Cancel</button>
+    </div>`;
+  openModal();
+}
+
+function showTradeWith(targetI){
+  const pi=G.cur;
+  const p=G.players[pi];
+  const tp=G.players[targetI];
+  const mc=document.getElementById('mc');
+
+  const myProps=Object.entries(G.props).filter(([idx,pd])=>pd.owner===pi&&pd.houses===0&&!pd.mortgaged).map(([idx])=>parseInt(idx));
+  const theirProps=Object.entries(G.props).filter(([idx,pd])=>pd.owner===targetI&&pd.houses===0&&!pd.mortgaged).map(([idx])=>parseInt(idx));
+
+  mc.innerHTML=`<div class="m-type" style="color:var(--gn)">TRADE WITH ${tp.name.toUpperCase()}</div>
+    <div class="m-title">📋 Trade Proposal</div>
+    <div class="m-desc">Select properties to exchange. All buildings must be sold first (they cannot be traded).</div>
+    
+    <div style="margin:1rem 0">
+      <div style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:1px;text-transform:uppercase;color:var(--mu);margin-bottom:6px">Your properties to give</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px" id="myTradeProps">
+        ${myProps.map(idx=>`<button class="trade-prop-btn" id="tp_my_${idx}" onclick="toggleTradeProp('my','${idx}')">${BOARD[idx].name}</button>`).join('')}
+        ${!myProps.length?'<span style="font-size:.75rem;color:var(--mu)">No unbuilt properties</span>':''}
+      </div>
+      <div style="margin-top:8px;font-family:'DM Mono',monospace;font-size:.62rem;color:var(--mu)">Cash to give: $<input type="number" id="myTradeAmt" value="0" min="0" max="${p.money}" style="width:70px;padding:3px 6px;border:1px solid var(--rule);border-radius:3px;font-family:'DM Mono',monospace;font-size:.72rem"></div>
+    </div>
+
+    <div style="margin:1rem 0">
+      <div style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:1px;text-transform:uppercase;color:var(--mu);margin-bottom:6px">${tp.name}'s properties to receive</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px" id="theirTradeProps">
+        ${theirProps.map(idx=>`<button class="trade-prop-btn" id="tp_their_${idx}" onclick="toggleTradeProp('their','${idx}')">${BOARD[idx].name}</button>`).join('')}
+        ${!theirProps.length?'<span style="font-size:.75rem;color:var(--mu)">No unbuilt properties</span>':''}
+      </div>
+      <div style="margin-top:8px;font-family:'DM Mono',monospace;font-size:.62rem;color:var(--mu)">Cash to receive: $<input type="number" id="theirTradeAmt" value="0" min="0" max="${tp.money}" style="width:70px;padding:3px 6px;border:1px solid var(--rule);border-radius:3px;font-family:'DM Mono',monospace;font-size:.72rem"></div>
+    </div>
+
+    <div class="m-btns">
+      <button class="mbtn buy" onclick="executeTrade(${targetI})">Propose Trade</button>
+      <button class="mbtn pass" onclick="closeModal()">Cancel</button>
+    </div>`;
+  window._tradeSelMy=[];
+  window._tradeSelTheir=[];
+  openModal();
+}
+
+function toggleTradeProp(side,idx){
+  const id=`tp_${side}_${idx}`;
+  const btn=document.getElementById(id);
+  const arr=side==='my'?window._tradeSelMy:window._tradeSelTheir;
+  const n=parseInt(idx);
+  const i=arr.indexOf(n);
+  if(i>=0){arr.splice(i,1);btn.classList.remove('sel');}
+  else{arr.push(n);btn.classList.add('sel');}
+}
+
+function executeTrade(targetI){
+  const pi=G.cur;
+  const p=G.players[pi];
+  const tp=G.players[targetI];
+  const myAmt=parseInt(document.getElementById('myTradeAmt').value)||0;
+  const theirAmt=parseInt(document.getElementById('theirTradeAmt').value)||0;
+  const myProps=window._tradeSelMy||[];
+  const theirProps=window._tradeSelTheir||[];
+
+  if(myAmt>p.money){toast('You do not have enough cash.','bad');return;}
+  if(theirAmt>tp.money){toast(`${tp.name} does not have enough cash.`,'bad');return;}
+
+  // Execute
+  p.money-=myAmt; tp.money+=myAmt;
+  tp.money-=theirAmt; p.money+=theirAmt;
+  myProps.forEach(idx=>{G.props[idx].owner=targetI;});
+  theirProps.forEach(idx=>{G.props[idx].owner=pi;});
+
+  const details=[];
+  if(myAmt>0) details.push(`$${myAmt} from ${p.name}`);
+  if(theirAmt>0) details.push(`$${theirAmt} from ${tp.name}`);
+  myProps.forEach(idx=>details.push(`${BOARD[idx].name} from ${p.name}`));
+  theirProps.forEach(idx=>details.push(`${BOARD[idx].name} from ${tp.name}`));
+
+  addLog(`<span class="ln">${p.name}</span> ↔ <span class="ln">${tp.name}</span> trade: ${details.join(', ')}`);
+  toast(`Trade complete!`,'good');
+  closeModal();
+  buildBoard();
+  renderSidebar();
+}
+
+// ════════════════════════════════════════════════════════════
+// BANKRUPTCY
+// ════════════════════════════════════════════════════════════
+function checkBankruptcy(pi,creditor,isDoubles){
+  const p=G.players[pi];
+  if(p.money>=0){afterLand(isDoubles);return;}
+
+  // Can they raise money?
+  const myAssets=Object.entries(G.props).filter(([idx,pd])=>pd.owner===pi);
+  if(myAssets.length>0){
+    toast(`${p.name} is in debt! Sell/mortgage properties to raise cash.`,'bad');
+    showDebtModal(pi,creditor,isDoubles);
+    return;
+  }
+
+  // Bankrupt
+  declareBankruptcy(pi,creditor,isDoubles);
+}
+
+function showDebtModal(pi,creditor,isDoubles){
+  const p=G.players[pi];
+  const mc=document.getElementById('mc');
+  mc.innerHTML=`<div class="m-type" style="color:var(--rd)">IN DEBT</div>
+    <div class="m-title">💀 ${p.name} owes $${Math.abs(p.money)}</div>
+    <div class="m-desc">Sell buildings or mortgage properties to raise cash. If you cannot cover your debt, you go bankrupt.</div>
+    <div class="m-row"><span class="m-lbl">Current balance</span><span class="m-val" style="color:var(--rd)">$${p.money}</span></div>
+    <div class="m-btns">
+      <button class="mbtn buy" onclick="closeModal();renderAll()">Manage Properties</button>
+      <button class="mbtn warn" onclick="declareBankruptcy(${pi},${creditor},${isDoubles})">Declare Bankruptcy</button>
+    </div>`;
+  openModal();
+}
+
+function declareBankruptcy(pi,creditor,isDoubles){
+  const p=G.players[pi];
+  p.bust=true;
+  closeModal();
+
+  // Transfer all assets
+  Object.entries(G.props).forEach(([idx,pd])=>{
+    if(pd.owner===pi){
+      if(creditor>=0){
+        pd.owner=creditor;
+        if(pd.mortgaged){
+          // New owner must pay 10% of mortgage immediately or mortgage stays
+          const sq=BOARD[parseInt(idx)];
+          G.players[creditor].money-=Math.floor(sq.mort*0.1);
+        }
+      } else {
+        delete G.props[parseInt(idx)];
+        // Remove buildings
+      }
+    }
+  });
+
+  if(p.money<0&&creditor>=0) G.players[creditor].money+=p.money; // they absorb the loss
+
+  addLog(`<span class="ln">${p.name}</span> went <span class="lb">BANKRUPT</span> 💀`);
+  toast(`${p.name} is bankrupt!`,'bad');
+  buildBoard();
+  renderSidebar();
+
+  // Check if game over
+  const alive=G.players.filter(x=>!x.bust);
+  if(alive.length===1){
+    setTimeout(()=>showWin(G.players.indexOf(alive[0])),800);
+    return;
+  }
+  // End turn
+  setTimeout(()=>endTurn(),600);
+}
+
+// ════════════════════════════════════════════════════════════
+// TURN FLOW
+// ════════════════════════════════════════════════════════════
+function afterLand(isDoubles){
+  if(isDoubles&&!G.players[G.cur].bust){
+    // Roll again
+    G.rolled=false;
+    updateAhead();
+    setActionBtns(`<button class="abtn go" onclick="doRoll()">🎲 Roll Again (Doubles!)</button>`);
+  } else {
+    showEndBtn();
+  }
+}
+
+function showEndBtn(){
+  document.querySelectorAll('.cell.lit').forEach(c=>c.classList.remove('lit'));
+  setActionBtns(`
+    <button class="abtn go" onclick="endTurn()">End Turn →</button>
+    <button class="abtn" onclick="showTradeModal()">Trade</button>
+  `);
+}
+
+function setActionBtns(html){
+  document.getElementById('abtns').innerHTML=html;
+}
+
+function endTurn(){
+  G.rolled=false;
+  G.gotDoubles=false;
+  G.doublesCount=0;
+  document.getElementById('doublesNote').style.display='none';
+
+  let next=G.cur;
+  let tries=0;
+  do{
+    next=(next+1)%G.players.length;
+    tries++;
+    if(tries>G.players.length) break;
+  }while(G.players[next].bust);
+
+  G.cur=next;
+  const p=G.players[G.cur];
+
+  if(p.skipTurn){
+    p.skipTurn=false;
+    addLog(`<span class="ln">${p.name}</span>'s turn was skipped`);
+    endTurn();
+    return;
+  }
+
+  updateAhead();
+  document.getElementById('dtot').textContent='?';
+  drawDie('a',1); drawDie('b',1);
+  setActionBtns(`<button class="abtn go" onclick="rollDice()">🎲 Roll Dice</button><button class="abtn" onclick="showTradeModal()">Trade</button>`);
+  renderSidebar();
+}
+
+function updateAhead(){
+  const p=G.players[G.cur];
+  document.getElementById('ahead').textContent=`${TEMS[G.cur]} ${p.name}'s turn — $${p.money.toLocaleString()}`;
+}
+
+// ════════════════════════════════════════════════════════════
+// WIN
+// ════════════════════════════════════════════════════════════
+function showWin(wi){
+  const w=G.players[wi];
+  document.getElementById('winEm').textContent=TEMS[wi];
+  document.getElementById('winT').textContent=`${w.name} wins!`;
+  document.getElementById('winNote').textContent=`Final balance: $${w.money.toLocaleString()}. While everyone else was busy pivoting, announcing AI features they hadn't built yet, and paying rent on Thine HQ at 2am, ${w.name} quietly outlasted them all. This is what ambient intelligence looks like. 🎧`;
+  show('s-win');
+}
+
+// ════════════════════════════════════════════════════════════
+// MODAL HELPERS
+// ════════════════════════════════════════════════════════════
+function openModal(){document.getElementById('ov').classList.add('on')}
+function closeModal(){document.getElementById('ov').classList.remove('on')}
+
+// ════════════════════════════════════════════════════════════
+// WINDOW RESIZE
+// ════════════════════════════════════════════════════════════
+window.addEventListener('resize',()=>{
+  if(document.getElementById('s-game').classList.contains('on')){
+    sizeBoard();
+    setTimeout(renderTokens,80);
+  }
+});
+</script>
 </body>
 </html>
