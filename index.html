@@ -191,6 +191,212 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 /* PROPERTY OWNERSHIP DOTS */
 .own-dot{position:absolute;bottom:2px;left:50%;transform:translateX(-50%);display:flex;gap:2px}
 .own-dot span{width:5px;height:5px;border-radius:50%;border:1px solid white}
+
+/* ══ MOBILE TOGGLE BUTTON ══ */
+.mobile-toggle{display:none;position:fixed;bottom:20px;right:20px;z-index:150;background:var(--tl);color:white;border:none;border-radius:50%;width:56px;height:56px;font-size:1.5rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.3);transition:all .15s}
+.mobile-toggle:active{transform:scale(.95)}
+
+/* ══ RESPONSIVE BREAKPOINTS ══ */
+
+/* TABLET (768px - 1024px) */
+@media (max-width: 1024px) {
+  .sidebar{width:220px}
+  .apanel{padding:.8rem 1rem}
+  .modal{max-width:90%}
+}
+
+/* MOBILE (below 768px) */
+@media (max-width: 768px) {
+  /* Title screen */
+  .t-link{top:1rem;right:1rem}
+  .t-link a{font-size:.55rem;padding:6px 12px}
+  .t-title{font-size:clamp(3rem,12vw,5rem);letter-spacing:-3px}
+  .t-sub{font-size:.55rem;letter-spacing:2px}
+  .t-pill{font-size:.55rem;padding:6px 16px}
+  .btn{padding:12px 24px;font-size:.85rem}
+  .t-stats{gap:1.5rem}
+  .t-stat .n{font-size:1.5rem}
+  .t-stat .l{font-size:.5rem}
+  
+  /* Setup */
+  .setup-box{padding:1.5rem;max-width:95%}
+  .setup-box h2{font-size:1.5rem}
+  .p-tok{width:32px;height:32px;font-size:1rem}
+  
+  /* Game layout - stack vertically */
+  #s-game{flex-direction:column-reverse}
+  
+  /* Sidebar becomes bottom panel */
+  .sidebar{
+    width:100%;
+    height:auto;
+    max-height:40vh;
+    border-right:none;
+    border-top:1px solid #222;
+    position:relative;
+    transition:transform .3s ease;
+  }
+  
+  .sidebar.minimized{
+    transform:translateY(calc(100% - 50px));
+  }
+  
+  .sb-top{
+    padding:.8rem 1rem;
+    cursor:pointer;
+    user-select:none;
+  }
+  
+  .sb-logo{font-size:.9rem}
+  .sb-scroll{padding:.6rem 1rem}
+  
+  /* Player cards in sidebar */
+  .pc{padding:8px 10px;margin-bottom:4px}
+  .pc-name{font-size:.75rem}
+  .pc-arch{font-size:.5rem}
+  .pc-money{font-size:1rem}
+  .pc-pos{font-size:.6rem}
+  .turn-tag{font-size:.45rem}
+  
+  /* Log section */
+  .log-item{font-size:.62rem;padding:3px 0}
+  
+  /* Main board area */
+  .main{flex:1;min-height:60vh}
+  .board-area{padding:5px}
+  
+  /* Board cells */
+  .board{
+    grid-template-columns:70px repeat(9,1fr) 70px;
+    grid-template-rows:70px repeat(9,1fr) 70px;
+  }
+  
+  .cem{font-size:clamp(12px,2vw,18px)}
+  .cnm{font-size:clamp(6px,.9vw,9px)}
+  .cpr{font-size:clamp(5px,.75vw,7.5px)}
+  .corner-em{font-size:clamp(16px,2.5vw,24px)}
+  .corner-nm{font-size:clamp(7px,1.1vw,10px)}
+  .corner-sb{font-size:clamp(5px,.7vw,7px)}
+  
+  /* Center board text */
+  .bc-t{font-size:clamp(1rem,3.5vw,2rem)}
+  .bc-p{font-size:clamp(.35rem,.7vw,.6rem);padding:4px 10px}
+  .bc-s{font-size:clamp(.35rem,.65vw,.6rem)}
+  
+  /* Token size */
+  .tok{width:14px;height:14px;font-size:8px}
+  
+  /* Action panel */
+  .apanel{padding:.7rem 1rem}
+  .ap-head{font-size:.85rem;margin-bottom:.5rem}
+  .ap-row{gap:8px}
+  .die{width:34px;height:34px}
+  .dtot{font-size:1.6rem}
+  .abtn{padding:8px 16px;font-size:.78rem}
+  .doubles-note{font-size:.55rem;padding:3px 8px}
+  
+  /* Modals */
+  .modal{
+    padding:1.5rem;
+    max-width:95%;
+    max-height:85vh;
+  }
+  .m-type{font-size:.52rem}
+  .m-title{font-size:1.2rem}
+  .m-flavor{font-size:.75rem}
+  .m-desc{font-size:.8rem}
+  .m-row{padding:5px 0;font-size:.75rem}
+  .m-lbl{font-size:.72rem}
+  .m-val{font-size:.78rem}
+  .m-effect{padding:8px 12px;font-size:.75rem}
+  .mbtn{padding:9px;font-size:.8rem;min-width:70px}
+  
+  /* Toast */
+  .toast{
+    bottom:1rem;
+    right:1rem;
+    left:1rem;
+    max-width:none;
+    font-size:.72rem;
+    padding:10px 14px;
+  }
+  
+  /* Win screen */
+  .win-t{font-size:clamp(2rem,8vw,3.5rem)}
+  .win-em{font-size:3rem}
+  .win-note{font-size:.78rem;max-width:90%}
+  
+  /* Show mobile toggle */
+  .mobile-toggle{display:block}
+}
+
+/* SMALL MOBILE (below 480px) */
+@media (max-width: 480px) {
+  .t-title{font-size:clamp(2.5rem,13vw,4rem)}
+  .btn{padding:10px 20px;font-size:.8rem}
+  
+  /* Smaller board for phones */
+  .board{
+    grid-template-columns:55px repeat(9,1fr) 55px;
+    grid-template-rows:55px repeat(9,1fr) 55px;
+  }
+  
+  .cem{font-size:clamp(10px,2.5vw,16px)}
+  .cnm{font-size:clamp(5px,1vw,8px)}
+  .cpr{font-size:clamp(4px,.8vw,6.5px)}
+  .corner-em{font-size:clamp(14px,3vw,20px)}
+  .corner-nm{font-size:clamp(6px,1.2vw,9px)}
+  .corner-sb{font-size:clamp(4px,.75vw,6px)}
+  
+  .bc-t{font-size:clamp(.9rem,4vw,1.5rem)}
+  .bc-p{font-size:clamp(.3rem,.75vw,.55rem);padding:3px 8px}
+  .bc-s{font-size:clamp(.3rem,.7vw,.55rem)}
+  
+  /* Smaller tokens */
+  .tok{width:12px;height:12px;font-size:7px;border-width:1px}
+  
+  /* Action panel */
+  .die{width:30px;height:30px}
+  .dtot{font-size:1.4rem}
+  .abtn{padding:7px 14px;font-size:.72rem}
+  
+  /* Modal adjustments */
+  .modal{padding:1.2rem}
+  .m-title{font-size:1.1rem}
+  .m-flavor{font-size:.7rem;line-height:1.6}
+  .m-desc{font-size:.75rem;line-height:1.6}
+  .mbtn{padding:8px;font-size:.75rem}
+  
+  /* Auction/trade inputs */
+  .auction-bids{grid-template-columns:1fr}
+  .bid-inp{flex-direction:column;align-items:flex-start;gap:4px}
+  .bid-inp input{width:100%}
+}
+
+/* LANDSCAPE MOBILE OPTIMIZATION */
+@media (max-width: 900px) and (max-height: 500px) and (orientation: landscape) {
+  #s-game{flex-direction:row}
+  .sidebar{
+    width:180px;
+    height:100%;
+    max-height:none;
+    border-right:1px solid #222;
+    border-top:none;
+  }
+  .sidebar.minimized{transform:none}
+  .main{min-height:auto}
+  .apanel{padding:.6rem .8rem}
+  .mobile-toggle{display:none}
+}
+
+/* TOUCH TARGETS */
+@media (hover: none) and (pointer: coarse) {
+  .cell{padding:4px}
+  .abtn{padding:10px 20px;min-height:44px}
+  .mbtn{min-height:44px}
+  .btn{min-height:44px}
+  .die{width:40px;height:40px}
+}
 </style>
 </head>
 <body>
@@ -240,7 +446,12 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 <!-- GAME SCREEN -->
 <div id="s-game" class="screen">
   <div class="sidebar">
-    <div class="sb-top"><div class="sb-logo">Ambient Capital</div></div>
+    <div class="sb-top">
+      <div class="sb-logo">
+        Ambient Capital
+        <span class="mobile-indicator" style="float:right;display:none">▼</span>
+      </div>
+    </div>
     <div class="sb-scroll">
       <div class="ss">Players</div>
       <div id="pcards"></div>
@@ -1692,6 +1903,52 @@ window.addEventListener('resize',()=>{
     sizeBoard();
     setTimeout(renderTokens,80);
   }
+});
+
+// ════════════════════════════════════════════════════════════
+// MOBILE SIDEBAR TOGGLE
+// ════════════════════════════════════════════════════════════
+function toggleSidebar(){
+  const sidebar=document.querySelector('.sidebar');
+  const indicator=document.querySelector('.mobile-indicator');
+  if(sidebar){
+    sidebar.classList.toggle('minimized');
+    if(indicator){
+      indicator.textContent=sidebar.classList.contains('minimized')?'▲':'▼';
+    }
+  }
+}
+
+function updateMobileUI(){
+  const sbTop=document.querySelector('.sb-top');
+  const indicator=document.querySelector('.mobile-indicator');
+  const sidebar=document.querySelector('.sidebar');
+  
+  if(window.innerWidth<=768){
+    // Show mobile indicator
+    if(indicator) indicator.style.display='inline';
+    // Make sidebar tappable
+    if(sbTop){
+      sbTop.addEventListener('click',toggleSidebar);
+      sbTop.style.cursor='pointer';
+    }
+  } else {
+    // Hide mobile indicator
+    if(indicator) indicator.style.display='none';
+    // Remove tap handler
+    if(sbTop){
+      sbTop.removeEventListener('click',toggleSidebar);
+      sbTop.style.cursor='';
+    }
+    // Reset sidebar
+    if(sidebar) sidebar.classList.remove('minimized');
+  }
+}
+
+// Make sidebar header tappable on mobile
+document.addEventListener('DOMContentLoaded',()=>{
+  updateMobileUI();
+  window.addEventListener('resize',updateMobileUI);
 });
 </script>
 </body>
